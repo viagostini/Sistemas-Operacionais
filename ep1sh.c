@@ -27,7 +27,8 @@ int main (int argc, char **argv) {
     return 0;
 }
 
-/* =======================================
+/* 
+ * =======================================
  *
  *              FUNÇÔES
  *
@@ -39,11 +40,11 @@ char **tokenize (char *str) {
     char *token, **args;
 
     token = strtok(str, " ");
-    args = (char**) malloc(MAX_ARG_NUM * sizeof(char*) + 1);
+    args = (char**)malloc(MAX_ARG_NUM * sizeof(char*) + 1);
 
     while (token != NULL) {
         int len = strlen(token);
-        args[i] = (char *) malloc(len * sizeof(char));
+        args[i] = (char *)malloc(len * sizeof(char));
         strcpy(args[i], token);
         token = strtok(NULL, " ");
         i++;
@@ -54,10 +55,11 @@ char **tokenize (char *str) {
 }
 
 void run_builtin (char **input_tokens) {
-    struct group* newgroup = getgrnam(input_tokens[1]);
+    int ch;
+    struct group* newgroup;
     if(strcmp(input_tokens[0], "chown") == 0) {
-        int ch = chown(input_tokens[2], -1, newgroup->gr_gid);
-        return;
+        newgroup = getgrnam(input_tokens[1]);
+        ch = chown(input_tokens[2], -1, newgroup->gr_gid);
     }
 
     if(strcmp(input_tokens[0], "exit") == 0)

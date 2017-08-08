@@ -18,21 +18,21 @@
 char **tokenize (char *str);
 
 /*
- * A função runBuiltIn() recebe a array de strings input_tokens e
+ * A função run_builtin() recebe a array de strings input_tokens e
  * decide qual comando embutido deve ser rodado pelo shell.
  */
 
 void run_builtin (char **input_tokens);
 
 /*
- * A função runExternal() recebe a array de strings input_tokens e
+ * A função run_external() recebe a array de strings input_tokens e
  * decide qual comando embutido deve ser rodado pelo shell.
  */
 
-void runExternal (char **input_tokens);
+void run_external (char **input_tokens);
 
 /*
- * A função isBuiltIn() recebe a string cmd e retorna true caso
+ * A função is_builtin() recebe a string cmd e retorna true caso
  * a string identifique um comando embutido e false caso contrário.
  */
 
