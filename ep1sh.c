@@ -22,6 +22,8 @@ int main (int argc, char **argv) {
         free(input);
         if (is_builtin(input_tokens[0]))
             run_builtin(input_tokens);
+        else
+            run_external(input_tokens);
     }
 
     return 0;
@@ -52,6 +54,18 @@ char **tokenize (char *str) {
 
     args[i] = NULL;
     return args;
+}
+
+void run_external (char **input_tokens) {
+    pid_t child_pid;
+
+    if ((child_pid = fork()) == 0) {
+        /* Executa o comando no processo filho */
+        execve(input_tokens[0], input_tokens, 0);
+    } else {
+        /* Processo pai espera finalização do processo filho */
+        waitpid(child_pid, NULL, 0);
+    }
 }
 
 void run_builtin (char **input_tokens) {
