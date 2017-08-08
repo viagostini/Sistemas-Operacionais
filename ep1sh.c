@@ -56,14 +56,20 @@ char **tokenize (char *str) {
 
 void run_builtin (char **input_tokens) {
     int ch;
+    time_t  t;
     struct group* newgroup;
+    struct tm *now;
     if(strcmp(input_tokens[0], "chown") == 0) {
         newgroup = getgrnam(input_tokens[1]);
         ch = chown(input_tokens[2], -1, newgroup->gr_gid);
-    }
-
-    if(strcmp(input_tokens[0], "exit") == 0)
+    } else if(strcmp(input_tokens[0], "date") == 0) {
+        t = time(NULL);
+        now = localtime(&t);
+        printf("%s", asctime(now));
+    } else if(strcmp(input_tokens[0], "exit") == 0)
         exit(EXIT_SUCCESS);
+
+
 }
 
 int is_builtin (char *cmd) {
