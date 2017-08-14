@@ -1,0 +1,4 @@
+* Tamanho do quantum
+* Tamanho da entrada (melhor guardar no vetor ou jogar direto na estrtura?)
+* A entrada está ordenada?
+* valor de retorno do exit()
