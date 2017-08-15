@@ -1,4 +1,5 @@
 #include "RR.h"
+#include "timer.h"
 #include "process.h"
 
 Node* new_node(Process p) {
@@ -53,4 +54,27 @@ void RR(Process* v, int size) {
         6.      Insere processo na fila com dt = dt - QUANTUM
     */
     
+    int i;
+    float timestamp; /* TO DO: Arrumar um nome melhor */ 
+    struct timespec init, now;
+    Queue rr_queue;
+
+    rr_queue = new_queue();
+    clock_gettime(CLOCK_MONOTONIC, &init);
+
+    while (i < size) {         /* Ainda tem processos fora da fila de execução */
+        clock_gettime(CLOCK_MONOTONIC, &now);
+        timestamp = timer_check(now);
+
+        while (v[i].t0 <= timestamp)        /* Processos chegando */
+            enqueue(rr_queue, v[i]);
+
+        Process p = dequeue(rr_queue); 
+        /* Roda este processo por QUANTUM unidades de tempo */
+        sleep(QUANTUM);
+        if (QUANTUM < p.dt) {
+            p.dt -= QUANTUM;
+            enqueue(rr_queue, p);
+        }
+    }
 }

@@ -18,5 +18,5 @@ float timer_check(struct timespec timer) {
     struct timespec curr;
     
     clock_gettime(CLOCK_MONOTONIC, &curr);
-    return timer_elapsed(curr, timer);
+    return timer_elapsed(timer, curr);
 }
