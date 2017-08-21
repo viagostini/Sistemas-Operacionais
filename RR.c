@@ -65,10 +65,11 @@ void RR(Process* v, int size) {
         clock_gettime(CLOCK_MONOTONIC, &now);
         timestamp = timer_check(now);
 
-        while (v[i]->t0 <= timestamp)        /* Processos chegando */
+        while (v[i]->t0 <= timestamp)       /* Processos chegando */
             enqueue(rr_queue, v[i]);
 
         Node* next = dequeue(rr_queue);
+        printf("RR\n");
         Process p = next->process;
         /* Roda este processo por QUANTUM unidades de tempo */
         printf("Rodando processo [%s] por %f segundos\n", p->name, QUANTUM);
