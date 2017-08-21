@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include "process.h"
 
-int main (int argc, char *argv[]) {
+int main (int argc, char* argv[]) {
     int simulator = atoi(argv[1]);
-    FILE *f_open = fopen(argv[2], "r");
+    FILE* f_open = fopen(argv[2], "r");
     float t0, dt, deadline;
     char name[100];
     Process* v = malloc(sizeof (Process) * 100);

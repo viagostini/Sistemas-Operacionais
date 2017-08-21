@@ -7,34 +7,34 @@
 
 const float QUANTUM = 2;
 
-typedef struct node Node;
+typedef struct node *Node;
 
 struct node {
     Process process;
-    Node *next;
+    Node next;
 };
 
-typedef struct queue Queue;
+typedef struct queue *Queue;
 
 struct queue {
-    Node *front;
-    Node *back;
+    Node front;
+    Node back;
 };
 
 /* Cria um novo node de lista ligada*/
-Node* new_node(Process p);
+Node new_node(Process p);
 
 /* Cria uma fila vazia */
-Queue* new_queue();
+Queue new_queue();
 
 /* Enfileira um processo na fila */
-void enqueue(Queue* q, Process p);
+void enqueue(Queue q, Process p);
 
 /* Remove o primeiro processo da fila */
-Node* dequeue(Queue* q);
+Node dequeue(Queue q);
 
 /* Libera memória da fila */
-void free_queue(Queue* q);
+void free_queue(Queue q);
 
 
 
