@@ -1,17 +1,25 @@
 #ifndef RR_H
 #define RR_H
 
-#define QUANTUM 2
+#include <stdio.h>
+#include <stdlib.h>
+#include "process.h"
+
+const float QUANTUM = 2;
+
+typedef struct node Node;
 
 struct node {
     Process process;
     Node *next;
-} Node;
+};
+
+typedef struct queue Queue;
 
 struct queue {
     Node *front;
     Node *back;
-} Queue;
+};
 
 /* Cria um novo node de lista ligada*/
 Node* new_node(Process p);

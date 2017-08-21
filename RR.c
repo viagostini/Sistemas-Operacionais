@@ -1,6 +1,5 @@
 #include "RR.h"
 #include "timer.h"
-#include "process.h"
 
 Node* new_node(Process p) {
     Node* tmp = (Node*)malloc(sizeof(Node));
@@ -57,7 +56,7 @@ void RR(Process* v, int size) {
     int i;
     float timestamp; /* TO DO: Arrumar um nome melhor */ 
     struct timespec init, now;
-    Queue rr_queue;
+    Queue* rr_queue;
 
     rr_queue = new_queue();
     clock_gettime(CLOCK_MONOTONIC, &init);
@@ -66,14 +65,16 @@ void RR(Process* v, int size) {
         clock_gettime(CLOCK_MONOTONIC, &now);
         timestamp = timer_check(now);
 
-        while (v[i].t0 <= timestamp)        /* Processos chegando */
+        while (v[i]->t0 <= timestamp)        /* Processos chegando */
             enqueue(rr_queue, v[i]);
 
-        Process p = dequeue(rr_queue); 
+        Node* next = dequeue(rr_queue);
+        Process p = next->process;
         /* Roda este processo por QUANTUM unidades de tempo */
+        printf("Rodando processo [%s] por %f segundos\n", p->name, QUANTUM);
         sleep(QUANTUM);
-        if (QUANTUM < p.dt) {
-            p.dt -= QUANTUM;
+        if (QUANTUM < p->dt) {
+            p->dt -= QUANTUM;
             enqueue(rr_queue, p);
         }
     }
