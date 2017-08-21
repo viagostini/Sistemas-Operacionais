@@ -30,7 +30,7 @@ int main (int argc, char* argv[]) {
             //SJF (tam, v);
             break;
         case 2:
-            RR (tam, v);
+            RR (v, tam);
             break;
         case 3:
             //PS (tam, v);

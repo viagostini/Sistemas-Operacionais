@@ -10,6 +10,7 @@ Node new_node(Process p) {
 
 Queue new_queue() {
     Queue q = malloc(sizeof(Queue*));
+    q->size = 0;
     q->front = q->back = NULL;
     return q;
 }
@@ -26,6 +27,7 @@ void enqueue(Queue q, Process p) {
     /* Adiciona o novo node no fim da fila e muda back */
     q->back->next = tmp;
     q->back = tmp;
+    q->size++;
 }
 
 Node dequeue(Queue q) {
@@ -40,6 +42,7 @@ Node dequeue(Queue q) {
     if (q->front == NULL)
         q->back == NULL;
 
+    q->size--;
     return tmp;
 }
 
@@ -53,7 +56,7 @@ void RR(Process* v, int size) {
         6.      Insere processo na fila com dt = dt - QUANTUM
     */
     
-    int i;
+    int i = 0;
     float timestamp; /* TO DO: Arrumar um nome melhor */ 
     struct timespec init, now;
     Queue rr_queue;
@@ -61,21 +64,26 @@ void RR(Process* v, int size) {
     rr_queue = new_queue();
     clock_gettime(CLOCK_MONOTONIC, &init);
 
-    while (i < size) {         /* Ainda tem processos fora da fila de execução */
+    while (rr_queue->size || i < size) {         /* Ainda tem processos fora da fila de execução */
         clock_gettime(CLOCK_MONOTONIC, &now);
         timestamp = timer_check(now);
 
-        while (v[i]->t0 <= timestamp)       /* Processos chegando */
-            enqueue(rr_queue, v[i]);
+        while (i < size && v[i]->t0 <= timestamp)       /* Processos chegando */
+            enqueue(rr_queue, v[i++]);
 
         Node next = dequeue(rr_queue);
-        Process p = next->process;
-        /* Roda este processo por QUANTUM unidades de tempo */
-        printf("Rodando processo [%s] por %f segundos\n", p->name, QUANTUM);
-        sleep(QUANTUM);
-        if (QUANTUM < p->dt) {
-            p->dt -= QUANTUM;
-            enqueue(rr_queue, p);
+        if (next != NULL) {
+            Process p = next->process;
+            
+            /* Roda este processo por QUANTUM unidades de tempo */
+            printf("Rodando processo [%s] por %f segundos\n", p->name, QUANTUM >= p->dt ? p->dt : QUANTUM);
+            if (QUANTUM >= p->dt)
+                sleep(p->dt);
+            else {
+                sleep(QUANTUM);
+                p->dt -= QUANTUM;
+                enqueue(rr_queue, p);
+            }
         }
     }
 }
