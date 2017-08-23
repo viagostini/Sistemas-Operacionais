@@ -7,7 +7,7 @@ int main (int argc, char* argv[]) {
     int simulator = atoi(argv[1]);
     FILE* f_open = fopen(argv[2], "r");
     float t0, dt, deadline;
-    char name[100];
+    char name[101];
     Process* v = malloc(sizeof (Process) * 100);
     int tam = 0;
     if (f_open == NULL) {
@@ -16,15 +16,14 @@ int main (int argc, char* argv[]) {
     }
 
     while (fscanf(f_open, "%f %f %f %s", &t0, &dt, &deadline, name) != EOF) {
-        Process p = create_process(t0, dt, deadline, name); // TO DO: criar essa função
+        v[tam++] = create_process(t0, dt, deadline, name); // TO DO: criar essa função
         if (DEBUG) {
-            printf("%s:\n", p->name);
-            printf("t0: %f\n", p->t0);
-            printf("dt: %f\n", p->dt);
-            printf("deadline: %f\n", p->deadline);
+            printf("%s:\n", v[tam-1]->name);
+            printf("t0: %f\n", v[tam-1]->t0);
+            printf("dt: %f\n", v[tam-1]->dt);
+            printf("deadline: %f\n", v[tam-1]->deadline);
             printf("============================\n");
         }
-        v[tam++] = p;
     }
 
     switch (simulator) {

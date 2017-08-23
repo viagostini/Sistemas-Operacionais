@@ -5,10 +5,8 @@
 #include <stdlib.h>
 
 struct process {
-    char name[100];
-    float t0;
-    float dt;
-    float deadline;
+	float t0, dt, deadline;
+    char name[101];
 };
 
 typedef struct process *Process;

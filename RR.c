@@ -22,12 +22,11 @@ void enqueue(Queue q, Process p) {
     /* Se a lista está vazia, tmp é tanto front quanto back */
     if (q->back == NULL) {
         q->front = q->back = tmp;
-        return;
+    } else { /* Adiciona o novo node no fim da fila e muda back */
+        q->back->next = tmp;
+        q->back = tmp;
     }
 
-    /* Adiciona o novo node no fim da fila e muda back */
-    q->back->next = tmp;
-    q->back = tmp;
     q->size++;
 }
 
@@ -38,13 +37,26 @@ Node dequeue(Queue q) {
     /* Guarda front antigo e adianta front para o próximo */
     Node tmp = q->front;
     q->front = q->front->next;
+    q->size--;
 
     /* Se front se tornou NULL, muda back para NULL */
-    if (q->front == NULL)
-        q->back == NULL;
+    if (q->size == 0)
+        q->back = q->front = NULL;
 
-    q->size--;
     return tmp;
+}
+
+void showQueue(Queue q) {
+    Node tmp;
+    for (tmp = q->front; tmp != NULL; tmp = tmp->next) {
+        Process p = tmp->process;
+        printf("%s:\n", p->name);
+        printf("t0: %f\n", p->t0);
+        printf("dt: %f\n", p->dt);
+        printf("deadline: %f\n", p->deadline);
+        printf("============================\n");
+        printf("oi\n");
+    }
 }
 
 void RR(Process* v, int size) {
@@ -59,6 +71,17 @@ void RR(Process* v, int size) {
         6.      Insere processo na fila com dt = dt - QUANTUM
     */
 
+    if (DEBUG_RR) {
+        int j; 
+        for (j = 0; j < size; j++) {
+            printf("%s:\n", v[j]->name);
+            printf("t0: %f\n", v[j]->t0);
+            printf("dt: %f\n", v[j]->dt);
+            printf("deadline: %f\n", v[j]->deadline);
+            printf("============================\n");
+        }
+    }
+
     int i = 0;
     float timestamp; /* TO DO: Arrumar um nome melhor */
     struct timespec init, now;
@@ -68,16 +91,24 @@ void RR(Process* v, int size) {
     clock_gettime(CLOCK_MONOTONIC, &init);
 
     while (rr_queue->size > 0 || i < size) {         /* Ainda tem processos fora da fila de execução */
-        if (DEBUG)
-            printf("Queue size: %d\nInseridos na Queue: %d\nTime atual:%f\n============================\n", rr_queue->size, i, timestamp);
-        clock_gettime(CLOCK_MONOTONIC, &now);
-        timestamp = timer_check(now);
+        if (!DEBUG_RR)
+            if (rr_queue->size != 0)
+                printf("Queue size: %d\nInseridos na Queue: %d\nTime atual:%f\n============================\n", rr_queue->size, i, timestamp);
+        timestamp = timer_check(init);
 
-        while (i < size && v[i]->t0 <= timestamp)       /* Processos chegando */
+        while (i < size && v[i]->t0 <= timestamp) {      /* Processos chegando */ 
+            if (DEBUG_RR)
+                printf("%d ENTROU NA FILA.\n", i);
             enqueue(rr_queue, v[i++]);
+        }
 
+        if (DEBUG_RR)
+            showQueue(rr_queue);
         Node next = dequeue(rr_queue);
+        
         if (next != NULL) {
+            if (DEBUG_RR)
+                printf("PEGOU UM ELEMENTO\n");
             Process p = next->process;
 
             /* Roda este processo por QUANTUM unidades de tempo */
