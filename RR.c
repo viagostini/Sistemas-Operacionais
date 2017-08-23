@@ -2,6 +2,13 @@
 #include "timer.h"
 #include "ep.h"
 
+Node new_node(Process p);
+Queue new_queue();
+void enqueue(Queue q, Process p);
+Node dequeue(Queue q);
+void showQueue(Queue q);
+void RR(Process* v, int size);
+
 Node new_node(Process p) {
     Node tmp = malloc(sizeof(Node*));
     tmp->process = p;
@@ -59,20 +66,21 @@ void showQueue(Queue q) {
     }
 }
 
+/*
+    1. Enquanto próximo processo tiver início no tempo atual:
+    2.      Insere processo na fila
+    3. Retira o primeiro processo da fila
+    4. Simula este processo por (QUANTUM) unidades de tempo
+    5. Se QUANTUM < processo.dt:
+    6.      Insere processo na fila com dt = dt - QUANTUM
+*/
 void RR(Process* v, int size) {
     if (DEBUG)
         printf("======= Round Robin ========\n============================\n");
-    /*
-        1. Enquanto próximo processo tiver início no tempo atual:
-        2.      Insere processo na fila
-        3. Retira o primeiro processo da fila
-        4. Simula este processo por (QUANTUM) unidades de tempo
-        5. Se QUANTUM < processo.dt:
-        6.      Insere processo na fila com dt = dt - QUANTUM
-    */
+
 
     if (DEBUG_RR) {
-        int j; 
+        int j;
         for (j = 0; j < size; j++) {
             printf("%s:\n", v[j]->name);
             printf("t0: %f\n", v[j]->t0);
@@ -96,7 +104,7 @@ void RR(Process* v, int size) {
                 printf("Queue size: %d\nInseridos na Queue: %d\nTime atual:%f\n============================\n", rr_queue->size, i, timestamp);
         timestamp = timer_check(init);
 
-        while (i < size && v[i]->t0 <= timestamp) {      /* Processos chegando */ 
+        while (i < size && v[i]->t0 <= timestamp) {      /* Processos chegando */
             if (DEBUG_RR)
                 printf("%d ENTROU NA FILA.\n", i);
             enqueue(rr_queue, v[i++]);
@@ -105,7 +113,7 @@ void RR(Process* v, int size) {
         if (DEBUG_RR)
             showQueue(rr_queue);
         Node next = dequeue(rr_queue);
-        
+
         if (next != NULL) {
             if (DEBUG_RR)
                 printf("PEGOU UM ELEMENTO\n");

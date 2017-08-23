@@ -89,7 +89,7 @@ void run_builtin (char **input_tokens) {
 int is_builtin (char *cmd) {
     int i;
     int cmd_num = sizeof(builtin) / sizeof(builtin[0]);
-    
+
     for (i = 0; i < cmd_num; i++)
         if (strcmp(cmd, builtin[i]) == 0)
             return 1;
