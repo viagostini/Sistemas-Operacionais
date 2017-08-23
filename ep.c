@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "process.h"
 
+#define DEBUG 1
+
 int main (int argc, char* argv[]) {
     int simulator = atoi(argv[1]);
     FILE* f_open = fopen(argv[2], "r");
@@ -9,7 +11,6 @@ int main (int argc, char* argv[]) {
     char name[100];
     Process* v = malloc(sizeof (Process) * 100);
     int tam = 0;
-
     if (f_open == NULL) {
         fprintf(stderr, "%s\n", "Arquivo nao existe.");
         exit(1);
@@ -17,13 +18,15 @@ int main (int argc, char* argv[]) {
 
     while (fscanf(f_open, "%f %f %f %s", &t0, &dt, &deadline, name) != EOF) {
         Process p = create_process(t0, dt, deadline, name); // TO DO: criar essa função
-        /*printf("%s:\n", p->name);
-        printf("t0: %f\n", p->t0);
-        printf("dt: %f\n", p->dt);
-        printf("deadline: %f\n", p->deadline);
-        printf("============================\n");*/
+        if (DEBUG) {
+            printf("%s:\n", p->name);
+            printf("t0: %f\n", p->t0);
+            printf("dt: %f\n", p->dt);
+            printf("deadline: %f\n", p->deadline);
+            printf("============================\n");
+        }
         v[tam++] = p;
-    }   
+    }
 
     switch (simulator) {
         case 1:
@@ -43,6 +46,3 @@ int main (int argc, char* argv[]) {
     return 0;
 
 }
-
-
-

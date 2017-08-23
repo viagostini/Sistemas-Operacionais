@@ -55,15 +55,15 @@ void RR(Process* v, int size) {
         5. Se QUANTUM < processo.dt:
         6.      Insere processo na fila com dt = dt - QUANTUM
     */
-    
+
     int i = 0;
-    float timestamp; /* TO DO: Arrumar um nome melhor */ 
+    float timestamp; /* TO DO: Arrumar um nome melhor */
     struct timespec init, now;
     Queue rr_queue;
 
     rr_queue = new_queue();
     clock_gettime(CLOCK_MONOTONIC, &init);
-
+    
     while (rr_queue->size || i < size) {         /* Ainda tem processos fora da fila de execução */
         clock_gettime(CLOCK_MONOTONIC, &now);
         timestamp = timer_check(now);
@@ -74,7 +74,7 @@ void RR(Process* v, int size) {
         Node next = dequeue(rr_queue);
         if (next != NULL) {
             Process p = next->process;
-            
+
             /* Roda este processo por QUANTUM unidades de tempo */
             printf("Rodando processo [%s] por %f segundos\n", p->name, QUANTUM >= p->dt ? p->dt : QUANTUM);
             if (QUANTUM >= p->dt)
