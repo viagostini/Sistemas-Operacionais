@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "process.h"
-
-#define DEBUG 1
+#include "ep.h"
 
 int main (int argc, char* argv[]) {
     int simulator = atoi(argv[1]);

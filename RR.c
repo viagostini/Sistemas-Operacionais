@@ -1,5 +1,6 @@
 #include "RR.h"
 #include "timer.h"
+#include "ep.h"
 
 Node new_node(Process p) {
     Node tmp = malloc(sizeof(Node*));
@@ -47,6 +48,8 @@ Node dequeue(Queue q) {
 }
 
 void RR(Process* v, int size) {
+    if (DEBUG)
+        printf("======= Round Robin ========\n============================\n");
     /*
         1. Enquanto próximo processo tiver início no tempo atual:
         2.      Insere processo na fila
@@ -63,8 +66,10 @@ void RR(Process* v, int size) {
 
     rr_queue = new_queue();
     clock_gettime(CLOCK_MONOTONIC, &init);
-    
-    while (rr_queue->size || i < size) {         /* Ainda tem processos fora da fila de execução */
+
+    while (rr_queue->size > 0 || i < size) {         /* Ainda tem processos fora da fila de execução */
+        if (DEBUG)
+            printf("Queue size: %d\nInseridos na Queue: %d\nTime atual:%f\n============================\n", rr_queue->size, i, timestamp);
         clock_gettime(CLOCK_MONOTONIC, &now);
         timestamp = timer_check(now);
 
