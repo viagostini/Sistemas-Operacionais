@@ -6,3 +6,6 @@ sh:
 
 clean:
 	rm ep ep1sh
+
+update: clean
+	git add *
