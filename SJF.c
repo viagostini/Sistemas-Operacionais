@@ -1,4 +1,5 @@
 #include "SJF.h"
+#include <time.h>
 
 int parent(int i);
 int left_child(int i);
@@ -9,6 +10,8 @@ void insert_process(Heap h, Process p);
 void corrige_subindo(Heap h);
 void corrige_descendo(Heap h, int i);
 void constroi_min_heap(Heap h);
+Process get_min(Heap h);
+void SJF(Process *v, int size);
 
 int parent(int i) {
     return i/2;
@@ -70,6 +73,16 @@ void corrige_descendo(Heap h, int i) {
     }
 }
 
+Process get_min(Heap h) {
+    if(h->size == 0)
+        return NULL;
+    Process p = h->A[1];
+    h->A[1] = h->A[h->size];
+    h->size--;
+    corrige_descendo(h, 1);
+    return p;
+}
+
 void SJF(Process *v, int size) {
     int i;
     float timestamp; /* TO DO: Arrumar um nome melhor */
@@ -88,9 +101,8 @@ void SJF(Process *v, int size) {
 
         Process p = get_min(h);
         if (p != NULL) {
-
-
-            
+            printf("Rodando processo [%s] por %f segundos\n", p->name, p->dt);
+            sleep(p->dt);
         }
     }
 }

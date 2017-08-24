@@ -1,6 +1,7 @@
 #include "RR.h"
 #include "timer.h"
 #include "ep.h"
+#include <time.h>
 
 Node new_node(Process p);
 Queue new_queue();

@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "process.h"
 #include "ep.h"
+#include "RR.h"
+#include "SJF.h"
 
 int main (int argc, char* argv[]) {
     int simulator = atoi(argv[1]);
@@ -28,7 +30,7 @@ int main (int argc, char* argv[]) {
 
     switch (simulator) {
         case 1:
-            //SJF (tam, v);
+            SJF (v, tam);
             break;
         case 2:
             RR (v, tam);

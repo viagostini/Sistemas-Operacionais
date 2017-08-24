@@ -4,8 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "process.h"
+#include <unistd.h> /* sleep() */
 
-const float QUANTUM = 2;
+#define QUANTUM 2.0 // Deu erro de multipla definição de variavel
+// const float QUANTUM = 2;
 
 typedef struct node *Node;
 
