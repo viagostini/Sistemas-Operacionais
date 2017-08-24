@@ -15,22 +15,17 @@ Process create_process(float t0, float dt, float deadline, char* name) {
     return new_process;
 }
 
+// Precisamos colocar as comparações com epsilon.
 int compare_process(Process p1, Process p2) {
-    if (p1->t0 < p2->t0)
+    if (p1->dt < p2->dt)
         return 1;
-    else if (p1->t0 > p2->t0)
+    else if (p1->dt > p2->dt)
         return 0;
     else {
-        if (p1->dt < p2->dt)
+        if (p1->deadline <= p2->deadline)
             return 1;
-        else if (p1->dt > p2->dt)
+        else
             return 0;
-        else {
-            if (p1->deadline <= p2->deadline)
-                return 1;
-            else
-                return 0;
-        }
     }
 }
 
