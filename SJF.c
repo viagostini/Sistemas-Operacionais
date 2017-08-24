@@ -84,7 +84,7 @@ Process get_min(Heap h) {
 }
 
 void SJF(Process *v, int size) {
-    int i;
+    int i = 0;
     float timestamp; /* TO DO: Arrumar um nome melhor */
     struct timespec init, now;
     Heap h;
@@ -95,9 +95,8 @@ void SJF(Process *v, int size) {
     while(h->size > 0 || i < size) {
         timestamp = timer_check(init);
 
-        while (i < size && v[i]->t0 <= timestamp) {
+        while (i < size && v[i]->t0 <= timestamp)
             insert_process(h, v[i++]);
-        }
 
         Process p = get_min(h);
         if (p != NULL) {

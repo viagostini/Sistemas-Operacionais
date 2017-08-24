@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "timer.h"
 #include <unistd.h>
+#include "ep.h"
 
 #define HEAP_SIZE 101 // Deu erro de multipla definição de variavel
 // const int HEAP_SIZE = 101; // Pode alterar nome.
