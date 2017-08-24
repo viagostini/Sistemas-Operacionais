@@ -4,6 +4,7 @@
 #include "ep.h"
 #include "RR.h"
 #include "SJF.h"
+#include "PS.h"
 
 int main (int argc, char* argv[]) {
     int simulator = atoi(argv[1]);
@@ -30,13 +31,16 @@ int main (int argc, char* argv[]) {
 
     switch (simulator) {
         case 1:
-            SJF (v, tam);
+            alg = 0;
+            SJF(v, tam);
             break;
         case 2:
-            RR (v, tam);
+            alg = 1;
+            RR(v, tam);
             break;
         case 3:
-            //PS (tam, v);
+            alg = 2;
+            PS(v, tam);
             break;
         default:
             fprintf(stderr, "%s\n", "Simulador escolhido nao existe.");
