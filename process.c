@@ -23,7 +23,6 @@ void swap_process(Process p1, Process p2) {
     p2 = p;
 }
 
-// Precisamos colocar as comparações com epsilon.
 int compare_process(Process p1, Process p2) {
     if (alg == 0) {
         if (p1->dt < p2->dt)
