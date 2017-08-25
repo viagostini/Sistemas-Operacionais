@@ -1,11 +1,10 @@
 #include "PS.h"
-#include "heap.h"
 
 void PS(Process *v, int size);
 
 void PS(Process *v, int size) {
     int i = 0;
-    float timestamp; /* TO DO: Arrumar um nome melhor */
+    float timestamp;
     struct timespec init, now;
     Heap h;
 
