@@ -3,6 +3,7 @@
 Process create_process(float t0, float dt, float deadline, char* name);
 void swap_process(Process p1, Process p2);
 int compare_process(Process p1, Process p2);
+void runProcess(float time);
 
 int alg;
 
@@ -47,4 +48,11 @@ int compare_process(Process p1, Process p2) {
                 return 0;
         }
     }
+}
+
+void runProcess(float time) {
+    float timestamp;
+    struct timespec init, now;
+    clock_gettime(CLOCK_MONOTONIC, &init);
+    while (timer_check(init) < time);
 }

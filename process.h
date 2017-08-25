@@ -4,6 +4,9 @@
 #include <string.h> /* strcpy() */
 #include <stdlib.h> /* malloc() */
 #include <float.h> /* FLT_EPSILON = 1E-5 */
+#include <time.h> /* clock_gettime(), CLOCK_MONOTONIC */
+
+#include "timer.h" /* timer_check() */
 
 /* Estrutura struct process criada para representar um processo. */
 struct process {
@@ -32,5 +35,8 @@ void swap_process(Process p1, Process p2);
 // algoritmo que está sendo executado. Devolve 1 caso p1 venha antes que p2 e
 // 0 caso contrário. */
 int compare_process(Process p1, Process p2);
+
+/* A função runProcess() roda um while por time segundos. */
+void runProcess(float time);
 
 #endif /* PROCESS_H */

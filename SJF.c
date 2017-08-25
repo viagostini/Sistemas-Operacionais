@@ -20,7 +20,8 @@ void SJF(Process *v, int size) {
         Process p = get_min(h);
         if (p != NULL) {
             printf("Rodando processo [%s] por %f segundos\n", p->name, p->dt);
-            sleep(p->dt);
+            //sleep(p->dt);
+            runProcess(p->dt);
         }
     }
 }
