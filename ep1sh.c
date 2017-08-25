@@ -7,7 +7,7 @@ char path[PATH_SIZE];
 
 char *builtin[] = {"chown", "date", "exit"};
 
-int main (int argc, char **argv) {
+int main(int argc, char **argv) {
     char prompt[PATH_SIZE+4];
     char *input, **input_tokens;
 
