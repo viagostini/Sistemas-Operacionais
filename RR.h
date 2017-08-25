@@ -3,11 +3,15 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "process.h"
 #include <unistd.h> /* sleep() */
+#include <time.h>
 
-#define QUANTUM 2.0 // Deu erro de multipla definição de variavel
-// const float QUANTUM = 2;
+#include "timer.h" /* timer_check() */
+#include "ep.h" /* DEBUG, DEBUG_RR*/
+#include "process.h"
+
+/* */
+extern const float QUANTUM;
 
 typedef struct node *Node;
 

@@ -1,7 +1,4 @@
 #include "RR.h"
-#include "timer.h"
-#include "ep.h"
-#include <time.h>
 
 Node new_node(Process p);
 Queue new_queue();
@@ -9,6 +6,8 @@ void enqueue(Queue q, Process p);
 Node dequeue(Queue q);
 void showQueue(Queue q);
 void RR(Process* v, int size);
+
+const float QUANTUM = 2;
 
 Node new_node(Process p) {
     Node tmp = malloc(sizeof(Node*));
