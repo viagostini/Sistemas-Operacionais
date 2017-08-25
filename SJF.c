@@ -4,7 +4,7 @@ void SJF(Process *v, int size);
 
 void SJF(Process *v, int size) {
     int i = 0;
-    float timestamp; /* TO DO: Arrumar um nome melhor */
+    float timestamp;
     struct timespec init, now;
     Heap h;
 
