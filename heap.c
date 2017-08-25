@@ -6,8 +6,9 @@ static void corrige_descendo(Heap h, int i);
 static void corrige_subindo(Heap h);
 Heap create_heap();
 void insert_process(Heap h, Process p);
-void constroi_min_heap(Heap h);
 Process get_min(Heap h);
+
+const int HEAP_SIZE = 101;
 
 Heap create_heap() {
     Heap h = malloc(sizeof(Heap*));
@@ -34,12 +35,6 @@ void corrige_subindo(Heap h) {
         swap_process(h->A[i/2], h->A[i]);
         i /= 2;
     }
-}
-
-void constroi_min_heap(Heap h) {
-    int i;
-    for (i = h->size / 2; i >= 1; i--)
-        corrige_descendo(h, i);
 }
 
 void corrige_descendo(Heap h, int i) {
