@@ -7,7 +7,7 @@ Node dequeue(Queue q);
 void showQueue(Queue q);
 void RR(Process* v, int size);
 
-const float QUANTUM = 2;
+const float QUANTUM = 1.2;
 
 Node new_node(Process p) {
     Node tmp = malloc(sizeof(Node*));
@@ -102,6 +102,7 @@ void RR(Process* v, int size) {
     }
 
     int i = 0;
+    int context = 0;
     float timestamp; /* TO DO: Arrumar um nome melhor */
     struct timespec init, now;
     Queue rr_queue;
@@ -133,13 +134,15 @@ void RR(Process* v, int size) {
             /* Roda este processo por QUANTUM unidades de tempo */
             printf("Rodando processo [%s] por %f segundos\n", p->name, QUANTUM >= p->dt ? p->dt : QUANTUM);
             if (QUANTUM >= p->dt)
-                sleep(p->dt);
+                runProcess(p->dt);
             else {
-                sleep(QUANTUM);
+                runProcess(QUANTUM);
+                context++;
                 p->dt -= QUANTUM;
                 enqueue(rr_queue, p);
             }
         }
     }
+    printf("Mudanças de contexto: %d\n", context);
     free_queue(rr_queue);
 }

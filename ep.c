@@ -1,6 +1,7 @@
 #include "ep.h"
 
 int main(int argc, char* argv[]) {
+    int i, close;
     int simulator = atoi(argv[1]);
     FILE* f_open = fopen(argv[2], "r");
     int tam = 0;
@@ -24,6 +25,9 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    if ((close = fclose(f_open)) != 0)
+        fprintf(stderr, "Error closing file!\n");
+
     switch (simulator) {
         case 1:
             alg = 0;
@@ -40,6 +44,11 @@ int main(int argc, char* argv[]) {
         default:
             fprintf(stderr, "%s\n", "Simulador escolhido nao existe.");
             exit(2);
+    }
+
+    for (i = 0; i < tam; i++) {
+        free(v[i]->name);
+        free(v[i]);
     }
 
     return 0;
