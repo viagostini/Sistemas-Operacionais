@@ -66,6 +66,17 @@ void showQueue(Queue q) {
     }
 }
 
+void free_queue(Queue q) {
+    Node tmp;
+
+    while (q->size != 0) {
+        tmp = dequeue(q);
+        free(tmp);
+    }
+
+    free(q);
+}
+
 /*
     1. Enquanto próximo processo tiver início no tempo atual:
     2.      Insere processo na fila
@@ -130,4 +141,5 @@ void RR(Process* v, int size) {
             }
         }
     }
+    free_queue(rr_queue);
 }
