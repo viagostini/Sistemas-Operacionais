@@ -4,7 +4,7 @@ Node new_node(Process p);
 Queue new_queue();
 void enqueue(Queue q, Process p);
 Node dequeue(Queue q);
-void showQueue(Queue q);
+void show_queue(Queue q);
 void RR(Process* v, int size);
 
 const float QUANTUM = 1.2;
@@ -53,7 +53,7 @@ Node dequeue(Queue q) {
     return tmp;
 }
 
-void showQueue(Queue q) {
+void show_queue(Queue q) {
     Node tmp;
     for (tmp = q->front; tmp != NULL; tmp = tmp->next) {
         Process p = tmp->process;
@@ -123,7 +123,7 @@ void RR(Process* v, int size) {
         }
 
         if (DEBUG_RR)
-            showQueue(rr_queue);
+            show_queue(rr_queue);
         Node next = dequeue(rr_queue);
 
         if (next != NULL) {
@@ -133,13 +133,14 @@ void RR(Process* v, int size) {
 
             /* Roda este processo por QUANTUM unidades de tempo */
             printf("Rodando processo [%s] por %f segundos\n", p->name, QUANTUM >= p->dt ? p->dt : QUANTUM);
-            if (QUANTUM >= p->dt)
-                runProcess(p->dt);
-            else {
-                runProcess(QUANTUM);
+            if (QUANTUM >= p->dt) {
+                run_process(p->dt);
+            } else {
+                run_process(QUANTUM);
                 context++;
                 p->dt -= QUANTUM;
                 enqueue(rr_queue, p);
+                free(p);
             }
         }
     }

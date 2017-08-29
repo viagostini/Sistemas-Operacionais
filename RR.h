@@ -43,6 +43,8 @@ Node dequeue(Queue q);
 /* Libera memória da fila */
 void free_queue(Queue q);
 
+void show_queue(Queue q);
+
 
 void RR(Process* v, int size);
 
