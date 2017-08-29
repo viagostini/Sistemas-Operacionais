@@ -51,7 +51,6 @@ int compare_process(Process p1, Process p2) {
 }
 
 void run_process(float time) {
-    float timestamp;
     struct timespec init, now;
     clock_gettime(CLOCK_MONOTONIC, &init);
     while (timer_check(init) < time);
