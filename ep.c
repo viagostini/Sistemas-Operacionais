@@ -2,7 +2,7 @@
 
 int main(int argc, char* argv[]) {
     int i, close;
-    int simulator = atoi(argv[1]);
+    scheduler = atoi(argv[1]);
     FILE* f_open = fopen(argv[2], "r");
     int tam = 0;
     float t0, dt, deadline;
@@ -28,17 +28,14 @@ int main(int argc, char* argv[]) {
     if ((close = fclose(f_open)) != 0)
         fprintf(stderr, "Error closing file!\n");
 
-    switch (simulator) {
-        case 1:
-            alg = 0;
+    switch (scheduler) {
+        case 0:
             SJF(v, tam);
             break;
-        case 2:
-            alg = 1;
+        case 1:
             RR(v, tam);
             break;
-        case 3:
-            alg = 2;
+        case 2:
             PS(v, tam);
             break;
         default:
@@ -50,6 +47,7 @@ int main(int argc, char* argv[]) {
         free(v[i]->name);
         free(v[i]);
     }
+    free(v);
 
     return 0;
 }
