@@ -21,7 +21,15 @@ typedef struct process *Process;
 // Caso seja o Shortest Job First, marca 0.
 // Caso seja o Round Robin, marca 1.
 // caso seja o Priority Scheduling, marca 2. */
-extern int alg;
+enum scheduler_choice {
+	SHORTEST_JOB_FIRST,
+	ROUND_ROBIN,
+	PRIORITY
+};
+
+typedef enum scheduler_choice Scheduler;
+
+extern Scheduler scheduler;
 
 /* A função create_process() cria um processo. Sendo t0 o tempo de chegada do
 // processo, dt o tempo que ele é executado, deadline o tempo máximo que ele
@@ -37,6 +45,6 @@ void swap_process(Process p1, Process p2);
 int compare_process(Process p1, Process p2);
 
 /* A função runProcess() roda um while por time segundos. */
-void runProcess(float time);
+void run_process(float time);
 
 #endif /* PROCESS_H */

@@ -3,9 +3,9 @@
 Process create_process(float t0, float dt, float deadline, char* name);
 void swap_process(Process p1, Process p2);
 int compare_process(Process p1, Process p2);
-void runProcess(float time);
+void run_process(float time);
 
-int alg;
+Scheduler scheduler;
 
 Process create_process(float t0, float dt, float deadline, char* name) {
     Process new_process = malloc(sizeof (Process*));
@@ -25,7 +25,7 @@ void swap_process(Process p1, Process p2) {
 }
 
 int compare_process(Process p1, Process p2) {
-    if (alg == 0) {
+    if (scheduler == SHORTEST_JOB_FIRST) {
         if (p1->dt < p2->dt)
             return 1;
         else if (p1->dt > p2->dt)
@@ -36,7 +36,7 @@ int compare_process(Process p1, Process p2) {
             else
                 return 0;
         }
-    } else if (alg == 2){
+    } else if (scheduler == PRIORITY){
         if (p1->deadline < p2->deadline)
             return 1;
         else if (p1->deadline > p2->deadline)
@@ -50,7 +50,7 @@ int compare_process(Process p1, Process p2) {
     }
 }
 
-void runProcess(float time) {
+void run_process(float time) {
     float timestamp;
     struct timespec init, now;
     clock_gettime(CLOCK_MONOTONIC, &init);
