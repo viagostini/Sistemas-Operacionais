@@ -1,8 +1,8 @@
-#include "SJF.h"
+#include "PS.h"
 
-void SJF(Process *v, int size);
+void PS(Process *v, int size);
 
-void SJF(Process *v, int size) {
+void PS(Process *v, int size) {
     int i = 0;
     float timestamp;
     struct timespec init, now;

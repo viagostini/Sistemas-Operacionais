@@ -1,6 +1,13 @@
 #include "RR.h"
-#include "timer.h"
-#include "ep.h"
+
+Node new_node(Process p);
+Queue new_queue();
+void enqueue(Queue q, Process p);
+Node dequeue(Queue q);
+void show_queue(Queue q);
+void RR(Process* v, int size);
+
+const float QUANTUM = 1.2;
 
 Node new_node(Process p) {
     Node tmp = malloc(sizeof(Node*));
@@ -46,7 +53,7 @@ Node dequeue(Queue q) {
     return tmp;
 }
 
-void showQueue(Queue q) {
+void show_queue(Queue q) {
     Node tmp;
     for (tmp = q->front; tmp != NULL; tmp = tmp->next) {
         Process p = tmp->process;
@@ -59,20 +66,32 @@ void showQueue(Queue q) {
     }
 }
 
+void free_queue(Queue q) {
+    Node tmp;
+
+    while (q->size != 0) {
+        tmp = dequeue(q);
+        free(tmp);
+    }
+
+    free(q);
+}
+
+/*
+    1. Enquanto próximo processo tiver início no tempo atual:
+    2.      Insere processo na fila
+    3. Retira o primeiro processo da fila
+    4. Simula este processo por (QUANTUM) unidades de tempo
+    5. Se QUANTUM < processo.dt:
+    6.      Insere processo na fila com dt = dt - QUANTUM
+*/
 void RR(Process* v, int size) {
     if (DEBUG)
         printf("======= Round Robin ========\n============================\n");
-    /*
-        1. Enquanto próximo processo tiver início no tempo atual:
-        2.      Insere processo na fila
-        3. Retira o primeiro processo da fila
-        4. Simula este processo por (QUANTUM) unidades de tempo
-        5. Se QUANTUM < processo.dt:
-        6.      Insere processo na fila com dt = dt - QUANTUM
-    */
+
 
     if (DEBUG_RR) {
-        int j; 
+        int j;
         for (j = 0; j < size; j++) {
             printf("%s:\n", v[j]->name);
             printf("t0: %f\n", v[j]->t0);
@@ -83,6 +102,7 @@ void RR(Process* v, int size) {
     }
 
     int i = 0;
+    int context = 0;
     float timestamp; /* TO DO: Arrumar um nome melhor */
     struct timespec init, now;
     Queue rr_queue;
@@ -96,16 +116,16 @@ void RR(Process* v, int size) {
                 printf("Queue size: %d\nInseridos na Queue: %d\nTime atual:%f\n============================\n", rr_queue->size, i, timestamp);
         timestamp = timer_check(init);
 
-        while (i < size && v[i]->t0 <= timestamp) {      /* Processos chegando */ 
+        while (i < size && v[i]->t0 <= timestamp) {      /* Processos chegando */
             if (DEBUG_RR)
                 printf("%d ENTROU NA FILA.\n", i);
             enqueue(rr_queue, v[i++]);
         }
 
         if (DEBUG_RR)
-            showQueue(rr_queue);
+            show_queue(rr_queue);
         Node next = dequeue(rr_queue);
-        
+
         if (next != NULL) {
             if (DEBUG_RR)
                 printf("PEGOU UM ELEMENTO\n");
@@ -113,13 +133,17 @@ void RR(Process* v, int size) {
 
             /* Roda este processo por QUANTUM unidades de tempo */
             printf("Rodando processo [%s] por %f segundos\n", p->name, QUANTUM >= p->dt ? p->dt : QUANTUM);
-            if (QUANTUM >= p->dt)
-                sleep(p->dt);
-            else {
-                sleep(QUANTUM);
+            if (QUANTUM >= p->dt) {
+                run_process(p->dt);
+            } else {
+                run_process(QUANTUM);
+                context++;
                 p->dt -= QUANTUM;
                 enqueue(rr_queue, p);
+                free(p);
             }
         }
     }
+    printf("Mudanças de contexto: %d\n", context);
+    free_queue(rr_queue);
 }

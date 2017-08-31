@@ -3,9 +3,15 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h> /* sleep() */
+#include <time.h>
+
+#include "timer.h" /* timer_check() */
+#include "ep.h" /* DEBUG, DEBUG_RR*/
 #include "process.h"
 
-const float QUANTUM = 2;
+/* */
+extern const float QUANTUM;
 
 typedef struct node *Node;
 
@@ -36,6 +42,8 @@ Node dequeue(Queue q);
 
 /* Libera memória da fila */
 void free_queue(Queue q);
+
+void show_queue(Queue q);
 
 
 void RR(Process* v, int size);

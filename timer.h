@@ -3,8 +3,6 @@
 
 #include <time.h>
 
-struct timespec timer_start();
-
 /* A função timer_elapsed() devolve um float que representa o tempo que passou
    entre dois instantes de tempo, representados por timespecs, em segundos. */
 float timer_elapsed(struct timespec start, struct timespec end);

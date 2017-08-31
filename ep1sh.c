@@ -7,7 +7,7 @@ char path[PATH_SIZE];
 
 char *builtin[] = {"chown", "date", "exit"};
 
-int main (int argc, char **argv) {
+int main(int argc, char **argv) {
     char prompt[PATH_SIZE+4];
     char *input, **input_tokens;
 
@@ -89,7 +89,7 @@ void run_builtin (char **input_tokens) {
 int is_builtin (char *cmd) {
     int i;
     int cmd_num = sizeof(builtin) / sizeof(builtin[0]);
-    
+
     for (i = 0; i < cmd_num; i++)
         if (strcmp(cmd, builtin[i]) == 0)
             return 1;

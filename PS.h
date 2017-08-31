@@ -1,16 +1,15 @@
-#ifndef SJF_H
-#define SJF_H
+#ifndef PS_H
+#define PS_H
 
 #include <stdio.h> /* printf() */
 #include <unistd.h> /* sleep() */
-#include <time.h> /* clock_gettime(), CLOCK_MONOTONIC */
 
 #include "timer.h" /* timer_check() */
 #include "heap.h" /* insert_process(), get_min(), create_heap() */
 #include "process.h" /* Process */
 
-/* A função SJF() executa o algoritmo de escalonamento Shortest Job First com os
+/* A função PS() executa o algoritmo de escalonamento com prioridade com os
 // processos v[0..size-1]. */
-void SJF(Process *v, int size);
+void PS(Process *v, int size);
 
-#endif
+#endif /* PS_H */
