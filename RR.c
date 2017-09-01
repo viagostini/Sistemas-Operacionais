@@ -102,21 +102,18 @@ void RR(Process* v, int size) {
     }
 
     int i = 0;
-    int context = 0;
-    float timestamp; /* TO DO: Arrumar um nome melhor */
+    context = 0;
+    float timestamp;
     struct timespec init, now;
     Queue rr_queue;
 
     rr_queue = new_queue();
     clock_gettime(CLOCK_MONOTONIC, &init);
 
-    while (rr_queue->size > 0 || i < size) {         /* Ainda tem processos fora da fila de execução */
-        if (!DEBUG_RR)
-            if (rr_queue->size != 0)
-                printf("Queue size: %d\nInseridos na Queue: %d\nTime atual:%f\n============================\n", rr_queue->size, i, timestamp);
+    while (rr_queue->size > 0 || i < size) {
         timestamp = timer_check(init);
 
-        while (i < size && v[i]->t0 <= timestamp) {      /* Processos chegando */
+        while (i < size && v[i]->t0 <= timestamp) {
             if (DEBUG_RR)
                 printf("%d ENTROU NA FILA.\n", i);
             enqueue(rr_queue, v[i++]);
@@ -131,16 +128,15 @@ void RR(Process* v, int size) {
                 printf("PEGOU UM ELEMENTO\n");
             Process p = next->process;
 
-            /* Roda este processo por QUANTUM unidades de tempo */
             printf("Rodando processo [%s] por %f segundos\n", p->name, QUANTUM >= p->dt ? p->dt : QUANTUM);
             if (QUANTUM >= p->dt) {
                 run_process(p->dt);
+                print_process(p, init);
             } else {
                 run_process(QUANTUM);
                 context++;
                 p->dt -= QUANTUM;
                 enqueue(rr_queue, p);
-                free(p);
             }
         }
     }
