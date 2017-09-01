@@ -7,11 +7,21 @@
 #include <float.h> /* FLT_EPSILON = 1E-5 */
 #include <time.h> /* clock_gettime(), CLOCK_MONOTONIC */
 #include <unistd.h> /* usleep() */
+#include <sched.h> /* sched_getcpu() */
 
 #include "timer.h" /* timer_check() */
 
+#define _GNU_SOURCE
+
 #define TRUE 1
 #define FALSE 0
+
+/* identificadores para o debug */
+#define CPU_EXIT 0
+#define CPU_ENTER 1
+
+#define PROC_FINISH 0
+#define PROC_ARRIVAL 1
 
 /* Estrutura struct process criada para representar um processo. */
 struct process {
@@ -61,5 +71,7 @@ void run_process(float time);
 void print_process(Process p, struct timespec init);
 
 boolean process_equal(Process a, Process b);
+
+void debug(int code, char *process, int line, float time);
 
 #endif /* PROCESS_H */

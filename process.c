@@ -13,6 +13,23 @@ FILE *out;
 
 boolean debug = FALSE;
 
+/* TOOD: terminar essa função */
+void debug(int code, char *proc_name, int line, float time) {
+    int cpu;
+    cpu = sched_getcpu();
+    fprintf(stderr, "%fs -- ", time);
+    switch(code):
+        case CPU_EXIT:
+            fprintf(stderr, "Processo [%s] saindo da CPU [%d]\n", proc_name, cpu);
+            break;
+        case CPU_ENTER:
+            fprintf(stderr, "Processo [%s] entrando na CPU [%d]\n", proc_name, cpu);
+            break;
+        case PROC_FINISH:
+            fprintf(stderr, "Processo [%s] finalizado. Escrevendo na linha %d.\n", proc_name, line);
+            break;
+}
+
 Process create_process(float t0, float dt, float deadline, char* name) {
     Process new_process = malloc(sizeof (Process*));
 
