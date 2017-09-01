@@ -4,6 +4,8 @@ Process create_process(float t0, float dt, float deadline, char* name);
 void swap_process(Process p1, Process p2);
 int compare_process(Process p1, Process p2);
 void run_process(float time);
+void print_process(Process p, struct timespec init);
+boolean process_equal(Process a, Process b);
 
 Scheduler scheduler;
 
@@ -59,4 +61,10 @@ void run_process(float time) {
 void print_process(Process p, struct timespec init) {
     float timestamp = timer_check(init);
     fprintf(out, "%s %f %f\n", p->name, timestamp, timestamp - p->t0);
+}
+
+boolean process_equal(Process a, Process b) {
+    if (strcmp(a->name, b->name) == 0)
+        return TRUE;
+    return FALSE;
 }

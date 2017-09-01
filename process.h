@@ -10,6 +10,11 @@
 
 #include "timer.h" /* timer_check() */
 
+#define TRUE 1
+#define FALSE 0
+typedef int boolean;
+
+
 /* Estrutura struct process criada para representar um processo. */
 struct process {
 	float t0, dt, deadline;
@@ -50,5 +55,8 @@ int compare_process(Process p1, Process p2);
 
 /* A função run_process() para o programa por time segundos. */
 void run_process(float time);
+
+void print_process(Process p, struct timespec init);
+boolean process_equal(Process a, Process b);
 
 #endif /* PROCESS_H */
