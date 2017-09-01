@@ -31,16 +31,23 @@ void swap_process(Process p1, Process p2) {
 }
 
 int compare_process(Process p1, Process p2) {
+    printf("dt do p1: %f\n", p1->dt);
+    printf("dt do p2: %f\n", p2->dt);
     if (scheduler == SHORTEST_JOB_FIRST) {
-        if (p1->dt < p2->dt - FLT_EPSILON)
+        if (p1->dt < p2->dt - FLT_EPSILON) {
+            printf("p1 menor\n");
             return 1;
-        else if (p1->dt > p2->dt + FLT_EPSILON)
+        } else if (p1->dt > p2->dt + FLT_EPSILON) {
+            printf("p2 menor\n");
             return 0;
-        else {
-            if (p1->deadline <= p2->deadline - FLT_EPSILON)
+        } else {
+            if (p1->deadline <= p2->deadline - FLT_EPSILON) {
+                printf("p1 menor\n");
                 return 1;
-            else
+            } else {
+                printf("p2 menor\n");
                 return 0;
+            }
         }
     } else if (scheduler == PRIORITY) {
         if (p1->deadline < p2->deadline - FLT_EPSILON)
