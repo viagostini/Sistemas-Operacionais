@@ -85,24 +85,8 @@ void free_queue(Queue q) {
     5. Se QUANTUM < processo.dt:
     6.      Insere processo na fila com dt = dt - QUANTUM
 */
-void RR(Process* v, int size) {
-    if (DEBUG)
-        printf("======= Round Robin ========\n============================\n");
-
-
-    if (DEBUG_RR) {
-        int j;
-        for (j = 0; j < size; j++) {
-            printf("%s:\n", v[j]->name);
-            printf("t0: %f\n", v[j]->t0);
-            printf("dt: %f\n", v[j]->dt);
-            printf("deadline: %f\n", v[j]->deadline);
-            printf("============================\n");
-        }
-    }
-
+void RR(Process *v, int size) {
     int i = 0;
-    context = 0;
     float timestamp;
     struct timespec init, now;
     Queue rr_queue;
@@ -117,8 +101,6 @@ void RR(Process* v, int size) {
         while (i < size && v[i]->t0 <= timestamp)
             enqueue(rr_queue, v[i++]);
 
-        if (DEBUG_RR)
-            show_queue(rr_queue);
         Node next = dequeue(rr_queue);
 
         if (next != NULL) {

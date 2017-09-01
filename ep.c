@@ -12,25 +12,19 @@ int main(int argc, char* argv[]) {
     char name[101];
     Process* v = malloc(sizeof (Process) * 100);
 
-    if (argc != 4) {
+    if (argc != 5 || argc != 4) {
         fprintf(stderr, "Número de parâmetros incorreto.\n");
         return EXIT_FAILURE;
-    }
+    } else if (argc == 5 && argv[4][0] == 'd')
+         debug = TRUE;
+
     if (in == NULL) {
         fprintf(stderr, "Arquivo nao existe.\n");
         return EXIT_FAILURE;
     }
 
-    while (fscanf(in, "%f %f %f %s", &t0, &dt, &deadline, name) != EOF) {
+    while (fscanf(in, "%f %f %f %s", &t0, &dt, &deadline, name) != EOF)
         v[tam++] = create_process(t0, dt, deadline, name);
-        if (DEBUG) {
-            printf("%s:\n", v[tam-1]->name);
-            printf("t0: %f\n", v[tam-1]->t0);
-            printf("dt: %f\n", v[tam-1]->dt);
-            printf("deadline: %f\n", v[tam-1]->deadline);
-            printf("============================\n");
-        }
-    }
 
     if ((close = fclose(in)) != 0)
         fprintf(stderr, "Error closing file!\n");

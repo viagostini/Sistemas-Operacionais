@@ -9,11 +9,6 @@
 #include "SJF.h" /* SJF() */
 #include "PS.h" /* PS() */
 
-#define DEBUG 0
-#define DEBUG_RR 0
-#define DEBUG_SJF 0
-#define DEBUG_PS 0
-
-extern int context; 
+extern int context;
 
 #endif /* EP_H */

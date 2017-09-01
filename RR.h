@@ -7,7 +7,7 @@
 #include <time.h>
 
 #include "timer.h" /* timer_check() */
-#include "ep.h" /* DEBUG, DEBUG_RR*/
+#include "ep.h"
 #include "process.h"
 
 /* */
@@ -45,6 +45,6 @@ void free_queue(Queue q);
 
 void show_queue(Queue q);
 
-void RR(Process* v, int size);
+void RR(Process *v, int size);
 
 #endif /* RR_H */

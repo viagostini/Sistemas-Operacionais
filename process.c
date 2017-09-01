@@ -11,6 +11,8 @@ Scheduler scheduler;
 
 FILE *out;
 
+boolean debug = FALSE;
+
 Process create_process(float t0, float dt, float deadline, char* name) {
     Process new_process = malloc(sizeof (Process*));
 

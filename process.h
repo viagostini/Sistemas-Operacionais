@@ -12,8 +12,6 @@
 
 #define TRUE 1
 #define FALSE 0
-typedef int boolean;
-
 
 /* Estrutura struct process criada para representar um processo. */
 struct process {
@@ -23,6 +21,10 @@ struct process {
 
 /* Process é um ponteiro para struct process. */
 typedef struct process *Process;
+
+typedef int boolean;
+
+extern boolean debug;
 
 /* Variável alg define o algoritmo que está sendo usado no momento.
 // Caso seja o Shortest Job First, marca 0.
@@ -57,6 +59,7 @@ int compare_process(Process p1, Process p2);
 void run_process(float time);
 
 void print_process(Process p, struct timespec init);
+
 boolean process_equal(Process a, Process b);
 
 #endif /* PROCESS_H */
