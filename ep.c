@@ -12,7 +12,7 @@ int main(int argc, char* argv[]) {
     char name[101];
     Process* v = malloc(sizeof (Process) * 100);
 
-    if (argc != 5 || argc != 4) {
+    if (argc != 5 && argc != 4) {
         fprintf(stderr, "Número de parâmetros incorreto.\n");
         return EXIT_FAILURE;
     } else if (argc == 5 && argv[4][0] == 'd')
@@ -29,6 +29,7 @@ int main(int argc, char* argv[]) {
     if ((close = fclose(in)) != 0)
         fprintf(stderr, "Error closing file!\n");
 
+    printf("SCHEDULER: %d\n", scheduler);
     switch (scheduler) {
         case 1:
             SJF(v, tam);

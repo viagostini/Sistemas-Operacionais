@@ -8,6 +8,7 @@
 #include "timer.h" /* timer_check() */
 #include "heap.h" /* insert_process(), get_min(), create_heap() */
 #include "process.h" /* Process */
+#include "ep.h"
 
 /* A função SJF() executa o algoritmo de escalonamento Shortest Job First com os
 // processos v[0..size-1]. */
