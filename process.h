@@ -2,9 +2,11 @@
 #define PROCESS_H
 
 #include <string.h> /* strcpy() */
-#include <stdlib.h> /* malloc() */
+#include <stdlib.h> /* malloc()*/
+#include <stdio.h> /* FILE */
 #include <float.h> /* FLT_EPSILON = 1E-5 */
 #include <time.h> /* clock_gettime(), CLOCK_MONOTONIC */
+#include <unistd.h> /* usleep() */
 
 #include "timer.h" /* timer_check() */
 
@@ -22,7 +24,7 @@ typedef struct process *Process;
 // Caso seja o Round Robin, marca 1.
 // caso seja o Priority Scheduling, marca 2. */
 enum scheduler_choice {
-	SHORTEST_JOB_FIRST,
+	SHORTEST_JOB_FIRST = 1,
 	ROUND_ROBIN,
 	PRIORITY
 };
@@ -30,6 +32,8 @@ enum scheduler_choice {
 typedef enum scheduler_choice Scheduler;
 
 extern Scheduler scheduler;
+
+extern FILE *out;
 
 /* A função create_process() cria um processo. Sendo t0 o tempo de chegada do
 // processo, dt o tempo que ele é executado, deadline o tempo máximo que ele
@@ -44,7 +48,7 @@ void swap_process(Process p1, Process p2);
 // 0 caso contrário. */
 int compare_process(Process p1, Process p2);
 
-/* A função runProcess() roda um while por time segundos. */
+/* A função run_process() para o programa por time segundos. */
 void run_process(float time);
 
 #endif /* PROCESS_H */

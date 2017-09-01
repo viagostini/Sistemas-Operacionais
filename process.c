@@ -7,6 +7,8 @@ void run_process(float time);
 
 Scheduler scheduler;
 
+FILE *out;
+
 Process create_process(float t0, float dt, float deadline, char* name) {
     Process new_process = malloc(sizeof (Process*));
 
@@ -26,23 +28,23 @@ void swap_process(Process p1, Process p2) {
 
 int compare_process(Process p1, Process p2) {
     if (scheduler == SHORTEST_JOB_FIRST) {
-        if (p1->dt < p2->dt)
+        if (p1->dt < p2->dt - FLT_EPSILON)
             return 1;
-        else if (p1->dt > p2->dt)
+        else if (p1->dt > p2->dt + FLT_EPSILON)
             return 0;
         else {
-            if (p1->deadline <= p2->deadline)
+            if (p1->deadline <= p2->deadline - FLT_EPSILON)
                 return 1;
             else
                 return 0;
         }
-    } else if (scheduler == PRIORITY){
-        if (p1->deadline < p2->deadline)
+    } else if (scheduler == PRIORITY) {
+        if (p1->deadline < p2->deadline - FLT_EPSILON)
             return 1;
-        else if (p1->deadline > p2->deadline)
+        else if (p1->deadline > p2->deadline + FLT_EPSILON)
             return 0;
         else {
-            if (p1->dt < p2->dt)
+            if (p1->dt < p2->dt - FLT_EPSILON)
                 return 1;
             else
                 return 0;
@@ -51,7 +53,10 @@ int compare_process(Process p1, Process p2) {
 }
 
 void run_process(float time) {
-    struct timespec init, now;
-    clock_gettime(CLOCK_MONOTONIC, &init);
-    while (timer_check(init) < time);
+    usleep(time * 1000000);
+}
+
+void print_process(Process p, struct timespec init) {
+    float timestamp = timer_check(init);
+    fprintf(out, "%s %f %f\n", p->name, timestamp, timestamp - p->t0);
 }
