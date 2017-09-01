@@ -1,20 +1,27 @@
 #include "ep.h"
 
+int context = 0;
+
 int main(int argc, char* argv[]) {
     int i, close;
     scheduler = atoi(argv[1]);
-    FILE* f_open = fopen(argv[2], "r");
+    FILE *in = fopen(argv[2], "r");
+    out = fopen(argv[3], "w");
     int tam = 0;
     float t0, dt, deadline;
     char name[101];
     Process* v = malloc(sizeof (Process) * 100);
 
-    if (f_open == NULL) {
-        fprintf(stderr, "%s\n", "Arquivo nao existe.");
-        exit(1);
+    if (argc != 4) {
+        fprintf(stderr, "Número de parâmetros incorreto.\n");
+        return EXIT_FAILURE;
+    }
+    if (in == NULL) {
+        fprintf(stderr, "Arquivo nao existe.\n");
+        return EXIT_FAILURE;
     }
 
-    while (fscanf(f_open, "%f %f %f %s", &t0, &dt, &deadline, name) != EOF) {
+    while (fscanf(in, "%f %f %f %s", &t0, &dt, &deadline, name) != EOF) {
         v[tam++] = create_process(t0, dt, deadline, name);
         if (DEBUG) {
             printf("%s:\n", v[tam-1]->name);
@@ -25,29 +32,29 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    if ((close = fclose(f_open)) != 0)
+    if ((close = fclose(in)) != 0)
         fprintf(stderr, "Error closing file!\n");
 
     switch (scheduler) {
-        case 0:
+        case 1:
             SJF(v, tam);
             break;
-        case 1:
+        case 2:
             RR(v, tam);
             break;
-        case 2:
+        case 3:
             PS(v, tam);
             break;
         default:
-            fprintf(stderr, "%s\n", "Simulador escolhido nao existe.");
+            fprintf(stderr, "Simulador escolhido nao existe.\n");
             exit(2);
     }
 
-    for (i = 0; i < tam; i++) {
-        free(v[i]->name);
+    for (i = 0; i < tam; i++)
         free(v[i]);
-    }
     free(v);
 
+    fprintf(out, "%d\n", context);
+    fclose(out);
     return 0;
 }
