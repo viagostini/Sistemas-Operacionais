@@ -106,6 +106,7 @@ void RR(Process* v, int size) {
     float timestamp;
     struct timespec init, now;
     Queue rr_queue;
+    Process prev = NULL;
 
     rr_queue = new_queue();
     clock_gettime(CLOCK_MONOTONIC, &init);
@@ -113,20 +114,17 @@ void RR(Process* v, int size) {
     while (rr_queue->size > 0 || i < size) {
         timestamp = timer_check(init);
 
-        while (i < size && v[i]->t0 <= timestamp) {
-            if (DEBUG_RR)
-                printf("%d ENTROU NA FILA.\n", i);
+        while (i < size && v[i]->t0 <= timestamp)
             enqueue(rr_queue, v[i++]);
-        }
 
         if (DEBUG_RR)
             show_queue(rr_queue);
         Node next = dequeue(rr_queue);
 
         if (next != NULL) {
-            if (DEBUG_RR)
-                printf("PEGOU UM ELEMENTO\n");
             Process p = next->process;
+            if(prev != NULL && !process_equal(p, prev))
+                context++;
 
             printf("Rodando processo [%s] por %f segundos\n", p->name, QUANTUM >= p->dt ? p->dt : QUANTUM);
             if (QUANTUM >= p->dt) {
@@ -134,12 +132,11 @@ void RR(Process* v, int size) {
                 print_process(p, init);
             } else {
                 run_process(QUANTUM);
-                context++;
                 p->dt -= QUANTUM;
                 enqueue(rr_queue, p);
             }
+            prev = p;
         }
     }
-    printf("Mudanças de contexto: %d\n", context);
     free_queue(rr_queue);
 }
