@@ -80,10 +80,7 @@ void run_builtin (char **input_tokens) {
         now = localtime(&t);
         strftime (buffer, 80, "%a %b %d %T %Z %Y\n", now);
         printf("%s", buffer);
-    } else if(strcmp(input_tokens[0], "exit") == 0)
-        exit(EXIT_SUCCESS);
-
-
+    }
 }
 
 int is_builtin (char *cmd) {
