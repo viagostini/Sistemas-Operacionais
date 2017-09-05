@@ -3,11 +3,10 @@
 int context = 0;
 
 int main(int argc, char* argv[]) {
-    int i, close;
+    int i, close, tam = 0;;
     scheduler = atoi(argv[1]);
     FILE *in = fopen(argv[2], "r");
     out = fopen(argv[3], "w");
-    int tam = 0;
     float t0, dt, deadline;
     char name[101];
     Process* v = malloc(sizeof (Process) * 100);

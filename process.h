@@ -1,5 +1,6 @@
 #ifndef PROCESS_H
 #define PROCESS_H
+#define _GNU_SOURCE
 
 #include <string.h> /* strcpy() */
 #include <stdlib.h> /* malloc()*/
@@ -11,7 +12,7 @@
 
 #include "timer.h" /* timer_check() */
 
-#define _GNU_SOURCE
+
 
 #define TRUE 1
 #define FALSE 0
@@ -72,6 +73,6 @@ void print_process(Process p, struct timespec init);
 
 boolean process_equal(Process a, Process b);
 
-void debug(int code, char *process, int line, float time);
+void print_debug(int code, char *process, int line, float time);
 
 #endif /* PROCESS_H */
