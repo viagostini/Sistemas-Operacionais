@@ -7,6 +7,7 @@ static void corrige_subindo(Heap h);
 Heap create_heap();
 void insert_process(Heap h, Process p);
 Process get_min(Heap h);
+void print_heap(Heap h);
 
 const int HEAP_SIZE = 101;
 
@@ -31,8 +32,10 @@ void insert_process(Heap h, Process p) {
 
 void corrige_subindo(Heap h) {
     int i = h->size;
-    while (i >= 2 && compare_process(h->A[i], h->A[i/2])) {
-        swap_process(h->A[i/2], h->A[i]);
+    while (i >= 2 && !compare_process(h->A[i/2], h->A[i])) {
+        Process p = h->A[i/2];
+        h->A[i/2] = h->A[i];
+        h->A[i] = p;
         i /= 2;
     }
 }
@@ -46,7 +49,9 @@ void corrige_descendo(Heap h, int i) {
         if (compare_process(h->A[j], h->A[f]))
             j = h->size;
         else {
-            swap_process(h->A[j], h->A[f]);
+            Process p = h->A[j];
+            h->A[j] = h->A[f];
+            h->A[f] = p;
             j = f;
         }
     }
@@ -60,4 +65,10 @@ Process get_min(Heap h) {
     h->size--;
     corrige_descendo(h, 1);
     return p;
+}
+
+void print_heap(Heap h) {
+    int i;
+    for (i = 1; i <= h->size; i++)
+        printf("%s: %f\n", h->A[i]->name, h->A[i]->dt);
 }

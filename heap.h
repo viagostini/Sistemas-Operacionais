@@ -2,7 +2,7 @@
 #define HEAP_H
 
 #include <stdlib.h> /* malloc() */
-#include "process.h" /* Process, compare_process(), swap_process() */
+#include "process.h" /* Process, compare_process()*/
 
 extern const int HEAP_SIZE;
 
@@ -23,5 +23,7 @@ void insert_process(Heap h, Process p);
 
 /* A função get_min() devolve o menor elemento do heap. */
 Process get_min(Heap h);
+
+void print_heap(Heap h);
 
 #endif /* HEAP_H */
