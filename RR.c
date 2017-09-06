@@ -103,10 +103,10 @@ void RR(Process *v, int size) {
 
         Node next = dequeue(rr_queue);
 
+        if(prev != NULL)
+            context++;
         if (next != NULL) {
             Process p = next->process;
-            if(prev != NULL && !process_equal(p, prev))
-                context++;
 
             printf("Rodando processo [%s] por %f segundos\n", p->name, QUANTUM >= p->dt ? p->dt : QUANTUM);
             if (QUANTUM >= p->dt) {
@@ -115,6 +115,12 @@ void RR(Process *v, int size) {
             } else {
                 run_process(QUANTUM);
                 p->dt -= QUANTUM;
+
+                timestamp = timer_check(init);
+
+                while (i < size && v[i]->t0 <= timestamp)
+                    enqueue(rr_queue, v[i++]);
+
                 enqueue(rr_queue, p);
             }
             prev = p;
