@@ -1,7 +1,6 @@
 #include "process.h"
 
 Process create_process(float t0, float dt, float deadline, char* name);
-void swap_process(Process p1, Process p2);
 int compare_process(Process p1, Process p2);
 void run_process(float time);
 void print_process(Process p, struct timespec init);
@@ -40,28 +39,16 @@ Process create_process(float t0, float dt, float deadline, char* name) {
     return new_process;
 }
 
-void swap_process(Process p1, Process p2) {
-    Process p = p1;
-    p1 = p2;
-    p2 = p;
-}
-
 int compare_process(Process p1, Process p2) {
-    printf("dt do p1: %f\n", p1->dt);
-    printf("dt do p2: %f\n", p2->dt);
     if (scheduler == SHORTEST_JOB_FIRST) {
         if (p1->dt < p2->dt - FLT_EPSILON) {
-            printf("p1 menor\n");
             return 1;
         } else if (p1->dt > p2->dt + FLT_EPSILON) {
-            printf("p2 menor\n");
             return 0;
         } else {
             if (p1->deadline <= p2->deadline - FLT_EPSILON) {
-                printf("p1 menor\n");
                 return 1;
             } else {
-                printf("p2 menor\n");
                 return 0;
             }
         }

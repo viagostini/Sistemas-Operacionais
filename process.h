@@ -12,8 +12,6 @@
 
 #include "timer.h" /* timer_check() */
 
-
-
 #define TRUE 1
 #define FALSE 0
 
@@ -21,8 +19,8 @@
 #define CPU_EXIT 0
 #define CPU_ENTER 1
 
-#define PROC_FINISH 0
-#define PROC_ARRIVAL 1
+#define PROC_FINISH 2
+#define PROC_ARRIVAL 3
 
 /* Estrutura struct process criada para representar um processo. */
 struct process {
@@ -57,9 +55,6 @@ extern FILE *out;
 // processo, dt o tempo que ele é executado, deadline o tempo máximo que ele
 // pode executar e name o nome do processo. */
 Process create_process(float t0, float dt, float deadline, char* name);
-
-/* A função swap_process() troca o processo p1 pelo p2 e vice versa. */
-void swap_process(Process p1, Process p2);
 
 /* A função compare_process() compara o processo p1 com o p2 de acordo com o
 // algoritmo que está sendo executado. Devolve 1 caso p1 venha antes que p2 e
