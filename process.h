@@ -9,6 +9,7 @@
 #include <time.h> /* clock_gettime(), CLOCK_MONOTONIC */
 #include <unistd.h> /* usleep() */
 #include <sched.h> /* sched_getcpu() */
+#include <pthread.h>
 
 #include "timer.h" /* timer_check() */
 
@@ -34,6 +35,8 @@ typedef struct process *Process;
 typedef int boolean;
 
 extern boolean debug;
+
+extern int num_out;
 
 /* Variável alg define o algoritmo que está sendo usado no momento.
 // Caso seja o Shortest Job First, marca 0.
@@ -62,7 +65,7 @@ Process create_process(float t0, float dt, float deadline, char* name);
 int compare_process(Process p1, Process p2);
 
 /* A função run_process() para o programa por time segundos. */
-void run_process(float time);
+void *run_process(void *time);
 
 void print_process(Process p, struct timespec init);
 

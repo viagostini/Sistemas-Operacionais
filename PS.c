@@ -9,6 +9,7 @@ void PS(Process *v, int size) {
     struct timespec init, now;
     Heap h;
     Process prev = NULL;
+    pthread_t tid;
 
     h = create_heap();
     clock_gettime(CLOCK_MONOTONIC, &init);
@@ -16,8 +17,11 @@ void PS(Process *v, int size) {
     while(h->size > 0 || i < size) {
         timestamp = timer_check(init);
 
-        while (i < size && v[i]->t0 <= timestamp)
+        while (i < size && v[i]->t0 <= timestamp) {
+            if (debug)
+                print_debug(PROC_ARRIVAL, v[i]->name, i + 1, timestamp);
             insert_process(h, v[i++]);
+        }
 
         Process p = get_min(h);
 
@@ -27,10 +31,18 @@ void PS(Process *v, int size) {
             quantum_time = time_ps(p->deadline);
             printf("Rodando processo [%s] por %f segundos\n", p->name, quantum_time >= p->dt ? p->dt : quantum_time);
             if (quantum_time >= p->dt) {
-                run_process(p->dt);
+                pthread_create(&tid, NULL, run_process, &p->dt);
+                pthread_join(tid, NULL);
+                //run_process(p->dt);
                 print_process(p, init);
+                if (debug) {
+                    timestamp = timer_check(init);
+                    print_debug(PROC_FINISH, p->name, num_out++, timestamp);
+                }
             } else {
-                run_process(quantum_time);
+                pthread_create(&tid, NULL, run_process, &quantum_time);
+                pthread_join(tid, NULL);
+                //run_process(quantum_time);
                 p->dt -= quantum_time;
 
                 timestamp = timer_check(init);

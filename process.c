@@ -2,7 +2,7 @@
 
 Process create_process(float t0, float dt, float deadline, char* name);
 int compare_process(Process p1, Process p2);
-void run_process(float time);
+void *run_process(void *time);
 void print_process(Process p, struct timespec init);
 boolean process_equal(Process a, Process b);
 
@@ -11,6 +11,8 @@ Scheduler scheduler;
 FILE *out;
 
 boolean debug = FALSE;
+
+int num_out = 1;
 
 void print_debug(int code, char *proc_name, int line, float time) {
     int cpu = sched_getcpu();
@@ -21,6 +23,9 @@ void print_debug(int code, char *proc_name, int line, float time) {
             break;
         case CPU_ENTER:
             fprintf(stderr, "Processo [%s] entrando na CPU [%d]\n", proc_name, cpu);
+            break;
+        case PROC_ARRIVAL:
+            fprintf(stderr, "Processo [%s] chegou. Lendo da linha %d\n", proc_name, line);
             break;
         case PROC_FINISH:
             fprintf(stderr, "Processo [%s] finalizado. Escrevendo na linha %d.\n", proc_name, line);
@@ -66,8 +71,9 @@ int compare_process(Process p1, Process p2) {
     }
 }
 
-void run_process(float time) {
-    usleep(time * 1000000);
+void *run_process(void *time) {
+    float time_sleep = *(float*)time;
+    usleep(time_sleep * 1000000);
 }
 
 void print_process(Process p, struct timespec init) {
