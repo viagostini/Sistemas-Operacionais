@@ -1,6 +1,7 @@
 #include "ep.h"
 
 int context = 0;
+int finished = 0;
 
 int main(int argc, char* argv[]) {
     int i, close, tam = 0;;
@@ -47,6 +48,10 @@ int main(int argc, char* argv[]) {
     for (i = 0; i < tam; i++)
         free(v[i]);
     free(v);
+
+    /* Para ler no script do python para analisar os resultados */
+    printf("%d\n", context);
+    printf("%d\n", finished);
 
     fprintf(out, "%d\n", context);
     fclose(out);

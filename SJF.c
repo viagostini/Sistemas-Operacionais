@@ -39,11 +39,14 @@ void SJF(Process *v, int size) {
                 print_debug(CPU_EXIT, p->name, 0, timestamp);
             }
             //run_process(p->dt);
+
+            timestamp = timer_check(init);
+            if (timestamp <= p->deadline + 1e-6)
+                finished++;
+
             print_process(p, init);
-            if (debug) {
-                timestamp = timer_check(init);
+            if (debug)
                 print_debug(PROC_FINISH, p->name, num_out++, timestamp);
-            }
         }
         prev = p;
     }

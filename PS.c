@@ -35,10 +35,13 @@ void PS(Process *v, int size) {
                 pthread_join(tid, NULL);
                 //run_process(p->dt);
                 print_process(p, init);
-                if (debug) {
-                    timestamp = timer_check(init);
+
+                timestamp = timer_check(init);
+                if (timestamp <= p->deadline + 1e-6)
+                    finished++;
+
+                if (debug)
                     print_debug(PROC_FINISH, p->name, num_out++, timestamp);
-                }
             } else {
                 pthread_create(&tid, NULL, run_process, &quantum_time);
                 pthread_join(tid, NULL);

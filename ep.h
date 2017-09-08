@@ -10,5 +10,6 @@
 #include "PS.h" /* PS() */
 
 extern int context;
+extern int finished;
 
 #endif /* EP_H */
