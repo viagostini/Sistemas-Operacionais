@@ -16,15 +16,19 @@ if [ ! -d "results" ]; then
     mkdir results
 fi
 
+if [ ! -d "debug" ]; then
+    mkdir debug
+fi
+
 for T in `seq 1 $TEST`; do
     #trace_file=Testes/teste$T.txt
     trace_file=traces/trace_file_$T.txt
-    result_file=results/result_file_$SCHED.$T.txt
+    result_file=results/result_$SCHED.$T.txt
 
     echo '\nRodando teste' $T 'com algoritmo' $SCHED'!\n'
 
-    ./ep $SCHED $trace_file $result_file || echo $erro.$SCHED.$T
+    ./ep $SCHED $trace_file $result_file d 2> debug/debug_$SCHED.$T || echo $erro.$SCHED.$T
 
 done
 
-echo '\nTeste do algoritmo' $SCHED 'finalizado!\n'
+echo 'Script finalizado!\n'
