@@ -53,6 +53,9 @@ int main(int argc, char* argv[]) {
     if (debug)
         fprintf(stderr, "Mudanças de contexto: %d\n", context);
 
+    /* Para a análise dos resultados: APAGAR DEPOIS */
+    fprintf(out, "%d\n", finished);
+
     fprintf(out, "%d", context);
     fclose(out);
     return 0;
