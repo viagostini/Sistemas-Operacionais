@@ -24,8 +24,6 @@ void SJF(Process *v, int size) {
 
         Process p = get_min(h);
 
-        if(prev != NULL)
-            context++;
         if (p != NULL) {
             printf("Rodando processo [%s] por %f segundos\n", p->name, p->dt);
             pthread_create(&tid, NULL, run_process, &p->dt);
@@ -34,19 +32,16 @@ void SJF(Process *v, int size) {
                 print_debug(CPU_ENTER, p->name, 0, timestamp);
             }
             pthread_join(tid, NULL);
-            if (debug) {
-                timestamp = timer_check(init);
-                print_debug(CPU_EXIT, p->name, 0, timestamp);
-            }
-            //run_process(p->dt);
 
             timestamp = timer_check(init);
-            if (timestamp <= p->deadline + 1e-6)
+            if (debug) {
+                print_debug(CPU_EXIT, p->name, 0, timestamp);
+                print_debug(PROC_FINISH, p->name, num_out++, timestamp);
+            }
+            if (timestamp <= p->deadline + FLT_EPSILON)
                 finished++;
 
             print_process(p, init);
-            if (debug)
-                print_debug(PROC_FINISH, p->name, num_out++, timestamp);
         }
         prev = p;
     }

@@ -25,27 +25,37 @@ void PS(Process *v, int size) {
 
         Process p = get_min(h);
 
-        if(prev != NULL)
-            context++;
         if (p != NULL) {
             quantum_time = time_ps(p->deadline);
             printf("Rodando processo [%s] por %f segundos\n", p->name, quantum_time >= p->dt ? p->dt : quantum_time);
             if (quantum_time >= p->dt) {
                 pthread_create(&tid, NULL, run_process, &p->dt);
+                if (debug) {
+                    timestamp = timer_check(init);
+                    print_debug(CPU_ENTER, p->name, 0, timestamp);
+                }
                 pthread_join(tid, NULL);
-                //run_process(p->dt);
                 print_process(p, init);
 
                 timestamp = timer_check(init);
-                if (timestamp <= p->deadline + 1e-6)
+                if (timestamp <= p->deadline + FLT_EPSILON)
                     finished++;
 
-                if (debug)
+                if (debug) {
+                    print_debug(CPU_EXIT, p->name, 0, timestamp);
                     print_debug(PROC_FINISH, p->name, num_out++, timestamp);
+                }
             } else {
+                if(prev != NULL)
+                    context++;
                 pthread_create(&tid, NULL, run_process, &quantum_time);
+                if (debug) {
+                    timestamp = timer_check(init);
+                    print_debug(CPU_ENTER, p->name, 0, timestamp);
+                }
                 pthread_join(tid, NULL);
-                //run_process(quantum_time);
+                if (debug)
+                    print_debug(CPU_EXIT, p->name, 0, timestamp);
                 p->dt -= quantum_time;
 
                 timestamp = timer_check(init);
