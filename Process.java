@@ -2,9 +2,9 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
 public class Process {
-	private static double MAXt0 = 180.0;
-	private static double MINdt = 1.0;
-	private static double MAXdt = 5.0;
+	private static double MAXt0 = 100.0;
+	private static double MINdt = 0.4;
+	private static double MAXdt = 3.0;
 	private static double gordura = 2.0;
 	private static int id = 1000;
 	private int PID;
