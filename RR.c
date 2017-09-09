@@ -7,7 +7,7 @@ Node dequeue(Queue q);
 void show_queue(Queue q);
 void RR(Process* v, int size);
 
-const float QUANTUM = 1.2;
+const float QUANTUM = 0.1;
 
 Node new_node(Process p) {
     Node tmp = malloc(sizeof(Node*));
