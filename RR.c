@@ -7,7 +7,7 @@ Node dequeue(Queue q);
 void show_queue(Queue q);
 void RR(Process* v, int size);
 
-const float QUANTUM = 3;
+const float QUANTUM = 1.2;
 
 Node new_node(Process p) {
     Node tmp = malloc(sizeof(Node*));
@@ -107,31 +107,39 @@ void RR(Process *v, int size) {
 
         Node next = dequeue(rr_queue);
 
-        if(prev != NULL)
-            context++;
         if (next != NULL) {
             Process p = next->process;
 
-            //printf("Rodando processo [%s] por %f segundos\n", p->name, QUANTUM >= p->dt ? p->dt : QUANTUM);
+            printf("Rodando processo [%s] por %f segundos\n", p->name, QUANTUM >= p->dt ? p->dt : QUANTUM);
             if (QUANTUM >= p->dt) {
                 pthread_create(&tid, NULL, run_process, &p->dt);
+                if (debug) {
+                    timestamp = timer_check(init);
+                    print_debug(CPU_ENTER, p->name, 0, timestamp);
+                }
                 pthread_join(tid, NULL);
-                //run_process(p->dt);
-                //print_process(p, init);
+                print_process(p, init);
 
                 timestamp = timer_check(init);
-                //fprintf(stderr, "timer = %f\ndeadline = %f\n", timestamp, p->deadline);
 
-                if (timestamp <= p->deadline + 1e-6)
+                if (timestamp <= p->deadline + FLT_EPSILON)
                     finished++;
-                if (debug)
+                if (debug) {
+                    print_debug(CPU_EXIT, p->name, 0, timestamp);
                     print_debug(PROC_FINISH, p->name, num_out++, timestamp);
-
+                }
             } else {
+                if(prev != NULL)
+                    context++;
                 float quantum_time = QUANTUM;
                 pthread_create(&tid, NULL, run_process, &quantum_time);
+                if (debug) {
+                    timestamp = timer_check(init);
+                    print_debug(CPU_ENTER, p->name, 0, timestamp);
+                }
                 pthread_join(tid, NULL);
-                //run_process(QUANTUM);
+                if (debug)
+                    print_debug(CPU_EXIT, p->name, 0, timestamp);
                 p->dt -= QUANTUM;
 
                 timestamp = timer_check(init);
