@@ -77,14 +77,6 @@ void free_queue(Queue q) {
     free(q);
 }
 
-/*
-    1. Enquanto próximo processo tiver início no tempo atual:
-    2.      Insere processo na fila
-    3. Retira o primeiro processo da fila
-    4. Simula este processo por (QUANTUM) unidades de tempo
-    5. Se QUANTUM < processo.dt:
-    6.      Insere processo na fila com dt = dt - QUANTUM
-*/
 void RR(Process *v, int size) {
     int i = 0;
     float timestamp;
@@ -110,7 +102,7 @@ void RR(Process *v, int size) {
         if (next != NULL) {
             Process p = next->process;
 
-            printf("Rodando processo [%s] por %f segundos\n", p->name, QUANTUM >= p->dt ? p->dt : QUANTUM);
+            //printf("Rodando processo [%s] por %f segundos\n", p->name, QUANTUM >= p->dt ? p->dt : QUANTUM);
             if (QUANTUM >= p->dt) {
                 pthread_create(&tid, NULL, run_process, &p->dt);
                 if (debug) {

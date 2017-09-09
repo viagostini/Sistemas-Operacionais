@@ -10,7 +10,7 @@
 #include "ep.h"
 #include "process.h"
 
-/* */
+/* Variável global QUANTUM criada para definir o quantum padrão dos processos. */
 extern const float QUANTUM;
 
 typedef struct node *Node;
@@ -28,23 +28,26 @@ struct queue {
     Node back;
 };
 
-/* Cria um novo node de lista ligada*/
+/* A função new_node() cria um novo node de lista ligada. */
 Node new_node(Process p);
 
-/* Cria uma fila vazia */
+/* A função new_queue() cria uma fila vazia. */
 Queue new_queue();
 
-/* Enfileira um processo na fila */
+/* A função enqueue() enfileira um processo na fila. */
 void enqueue(Queue q, Process p);
 
-/* Remove o primeiro processo da fila */
+/* A função dequeue() remove o primeiro processo da fila. */
 Node dequeue(Queue q);
 
-/* Libera memória da fila */
+/* A função free_queue() libera memória da fila. */
 void free_queue(Queue q);
 
+/* A função show_queue() imprime a fila na saída padrão. */
 void show_queue(Queue q);
 
+/* A função RR() executa o algoritmo de escalonamento Round Robin com os
+// processos v[0..size-1]. */
 void RR(Process *v, int size);
 
 #endif /* RR_H */

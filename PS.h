@@ -13,6 +13,7 @@
 // processos v[0..size-1]. */
 void PS(Process *v, int size);
 
+/* A função time_ps() calcula o tempo que se deve dar para cada processo. */
 float time_ps(float deadline);
 
 #endif /* PS_H */

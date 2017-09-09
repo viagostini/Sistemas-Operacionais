@@ -24,6 +24,7 @@ void insert_process(Heap h, Process p);
 /* A função get_min() devolve o menor elemento do heap. */
 Process get_min(Heap h);
 
+/* A função print_heap() imprime todo o heap na tela. */
 void print_heap(Heap h);
 
 #endif /* HEAP_H */

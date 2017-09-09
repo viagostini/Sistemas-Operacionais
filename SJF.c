@@ -25,7 +25,7 @@ void SJF(Process *v, int size) {
         Process p = get_min(h);
 
         if (p != NULL) {
-            printf("Rodando processo [%s] por %f segundos\n", p->name, p->dt);
+            //printf("Rodando processo [%s] por %f segundos\n", p->name, p->dt);
             pthread_create(&tid, NULL, run_process, &p->dt);
             if (debug) {
                 timestamp = timer_check(init);

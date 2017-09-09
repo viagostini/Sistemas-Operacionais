@@ -27,7 +27,7 @@ void PS(Process *v, int size) {
 
         if (p != NULL) {
             quantum_time = time_ps(p->deadline);
-            printf("Rodando processo [%s] por %f segundos\n", p->name, quantum_time >= p->dt ? p->dt : quantum_time);
+            //printf("Rodando processo [%s] por %f segundos\n", p->name, quantum_time >= p->dt ? p->dt : quantum_time);
             if (quantum_time >= p->dt) {
                 pthread_create(&tid, NULL, run_process, &p->dt);
                 if (debug) {

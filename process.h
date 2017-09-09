@@ -19,7 +19,6 @@
 /* identificadores para o debug */
 #define CPU_EXIT 0
 #define CPU_ENTER 1
-
 #define PROC_FINISH 2
 #define PROC_ARRIVAL 3
 
@@ -34,14 +33,18 @@ typedef struct process *Process;
 
 typedef int boolean;
 
+/* Variável global debug criada para saber se a mensagem de debug deve ser
+// impressa. */
 extern boolean debug;
 
+/* Variável global num_out criada para saber em que linha de arquivo será
+// escrita a saída. */
 extern int num_out;
 
 /* Variável alg define o algoritmo que está sendo usado no momento.
-// Caso seja o Shortest Job First, marca 0.
-// Caso seja o Round Robin, marca 1.
-// caso seja o Priority Scheduling, marca 2. */
+// Caso seja o Shortest Job First, marca 1.
+// Caso seja o Round Robin, marca 2.
+// caso seja o Priority Scheduling, marca 3. */
 enum scheduler_choice {
 	SHORTEST_JOB_FIRST = 1,
 	ROUND_ROBIN,
@@ -67,10 +70,15 @@ int compare_process(Process p1, Process p2);
 /* A função run_process() para o programa por time segundos. */
 void *run_process(void *time);
 
+/* A função print_process() imprime na tela o processo e o tempo atual em
+// relação ao tempo em que se iniciou a execução do programa. */
 void print_process(Process p, struct timespec init);
 
+/* A função process_equal() verifica se o processo a é igual ao processo b. */
 boolean process_equal(Process a, Process b);
 
+/* A função print_debug() imprime na saída de erro uma mensagem a depender do
+// code enviado. */
 void print_debug(int code, char *process, int line, float time);
 
 #endif /* PROCESS_H */
