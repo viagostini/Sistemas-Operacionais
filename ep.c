@@ -49,11 +49,11 @@ int main(int argc, char* argv[]) {
         free(v[i]);
     free(v);
 
-    /* Para ler no script do python para analisar os resultados */
-    fprintf(stderr, "Context: %d\n", context);
-    fprintf(stderr, "Finished: %d\n", finished);
+    /* Para o debug */
+    if (debug)
+        fprintf(stderr, "Mudanças de contexto: %d\n", context);
 
-    fprintf(out, "%d\n", context);
+    fprintf(out, "%d", context);
     fclose(out);
     return 0;
 }
