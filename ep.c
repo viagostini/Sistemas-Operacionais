@@ -50,8 +50,8 @@ int main(int argc, char* argv[]) {
     free(v);
 
     /* Para ler no script do python para analisar os resultados */
-    printf("%d\n", context);
-    printf("%d\n", finished);
+    fprintf(stderr, "Context: %d\n", context);
+    fprintf(stderr, "Finished: %d\n", finished);
 
     fprintf(out, "%d\n", context);
     fclose(out);

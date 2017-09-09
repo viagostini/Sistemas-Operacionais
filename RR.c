@@ -7,7 +7,7 @@ Node dequeue(Queue q);
 void show_queue(Queue q);
 void RR(Process* v, int size);
 
-const float QUANTUM = 0.05;
+const float QUANTUM = 3;
 
 Node new_node(Process p) {
     Node tmp = malloc(sizeof(Node*));
@@ -112,15 +112,15 @@ void RR(Process *v, int size) {
         if (next != NULL) {
             Process p = next->process;
 
-            printf("Rodando processo [%s] por %f segundos\n", p->name, QUANTUM >= p->dt ? p->dt : QUANTUM);
+            //printf("Rodando processo [%s] por %f segundos\n", p->name, QUANTUM >= p->dt ? p->dt : QUANTUM);
             if (QUANTUM >= p->dt) {
                 pthread_create(&tid, NULL, run_process, &p->dt);
                 pthread_join(tid, NULL);
                 //run_process(p->dt);
-                print_process(p, init);
+                //print_process(p, init);
 
                 timestamp = timer_check(init);
-                fprintf(stderr, "timer = %f\ndeadline = %f\n", timestamp, p->deadline);
+                //fprintf(stderr, "timer = %f\ndeadline = %f\n", timestamp, p->deadline);
 
                 if (timestamp <= p->deadline + 1e-6)
                     finished++;
