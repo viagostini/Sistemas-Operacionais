@@ -6,7 +6,7 @@
 SCHED=$1
 TEST=$2
 
-echo Testando escalonador $SCHED
+echo '\nTestando escalonador' $SCHED '\n'
 
 erro="ERRO na execução do ep"
 
@@ -16,14 +16,15 @@ if [ ! -d "results" ]; then
     mkdir results
 fi
 
-for T in seq $TEST; do
-    trace_file=Testes/teste$T.txt
+for T in `seq 1 $TEST`; do
+    #trace_file=Testes/teste$T.txt
+    trace_file=traces/trace_file_$T.txt
     result_file=results/result_file_$SCHED.$T.txt
 
-    echo Rodando teste $T com algoritmo $SCHED!
+    echo '\nRodando teste' $T 'com algoritmo' $SCHED'!\n'
 
     ./ep $SCHED $trace_file $result_file || echo $erro.$SCHED.$T
 
 done
 
-echo Teste $T do algoritmo $SCHED finalizado!
+echo '\nTeste do algoritmo' $SCHED 'finalizado!\n'
