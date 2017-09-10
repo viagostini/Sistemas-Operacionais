@@ -2,10 +2,10 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
 public class Process {
-	private static double MAXt0 = 100.0;
-	private static double MINdt = 0.4;
-	private static double MAXdt = 3.0;
-	private static double gordura = 2.0;
+	private static double MAXt0 = 150.0;
+	private static double MINdt = 0.5;
+	private static double MAXdt = 2.0;
+	private static double gordura = 80.0;
 	private static int id = 1000;
 	private int PID;
 	private double t0, dt, deadline;
@@ -16,7 +16,7 @@ public class Process {
 		this.nome = "pid" + Integer.toHexString(this.PID);
 		this.t0 = Math.random() * MAXt0;
 		this.dt = MINdt + (MAXdt - MINdt) * Math.random();
-		this.deadline = t0 + gordura * this.dt;
+		this.deadline = t0 + gordura;
 	}
 
 	@Override
