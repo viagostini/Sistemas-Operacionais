@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
     out = fopen(argv[3], "w");
     float t0, dt, deadline;
     char name[101];
-    Process* v = malloc(sizeof (Process) * 100);
+    Process* v = malloc(sizeof (Process) * 455);
 
     if (argc != 5 && argc != 4) {
         fprintf(stderr, "Número de parâmetros incorreto.\n");
