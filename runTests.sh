@@ -7,11 +7,11 @@ SCHED=$1
 BEGIN=$2
 END=$3
 
-echo '\nTestando escalonador' $SCHED '\n'
+echo '\nTestando escalonador' $SCHED 'de' $BEGIN 'ate' $END '\n'
 
 erro="ERRO na execução do ep"
 
-make
+#make
 
 if [ ! -d "results" ]; then
     mkdir results
@@ -23,8 +23,8 @@ fi
 
 for T in `seq $BEGIN $END`; do
     #trace_file=Testes/teste$T.txt
-    trace_file=traces/trace_file_$T.txt
-    result_file=results/result_$SCHED.$T
+    trace_file=traces/trace_file3_$T.txt
+    result_file=results/result_novo_$SCHED.$T
 
     echo '\nRodando teste' $T 'com algoritmo' $SCHED'!\n'
 
