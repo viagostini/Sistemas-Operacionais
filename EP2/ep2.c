@@ -3,9 +3,19 @@
 //  Vinicius Perche de Toledo Agostini / 4367487
 */
 
+/*
+    TODO
+    - Sistema de Pontuação
+        -> Bonus por ultrapassar geral
+    - Ciclistas quebrando
+    - Flash
+    - Debug
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <time.h>
 #include <semaphore.h>
 
 struct ciclista {
@@ -23,29 +33,88 @@ int v;                  /* Número de voltas */
 int **track;            /* Matriz d x 10 */
 Ciclista* racers;       /* Vetor de ciclistas */
 
+int flash = -1;
+
 int counter;
 int globalsense = 0;
 
 pthread_t *tid;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-double timer;       /* Milisegundos */
+
+void update_speed(int i) {
+    int prev = racers[i]->speed;
+
+    int r = rand() %  100;
+
+    if (prev == 120)
+        if (r < 70)
+            racers[i]->speed = 60;
+    else if (prev == 60)
+        if (r < 50)
+            racers[i]->speed = 120;
+
+    if ((flash != -1) && (racers[flash]->lap == v - 1))
+        racers[flash]->speed = 40;
+}
+
+int can_overtake(int i, int col) {
+    int j;
+    int new_col = -1;
+    int new_pos = (racers[i]->pos + 1) % d;
+
+    for (j = col + 1; j < 10; j++)
+        if (track[new_pos][j] == -1)
+            new_col = j;
+
+    return new_col;
+}
 
 void update_position(int i) {
-    int j, col;
-    int x = racers[i]->pos;
+    int j, col, new_col;
+    int prev_pos = racers[i]->pos;
+    int new_pos = (prev_pos + 1) % d;
 
-    for (j = 0; j < 10; j++)
-        if (track[x][j] == i)
-            col = j;
+    if ((flash != -1) && (racers[flash]->lap >= v - 1))
+        racers[i]->dt -= 20;
+    else
+        racers[i]->dt -= 60;
 
-    track[x][col] = -1;
+    if (racers[i]->dt == 0) {
+        for (j = 0; j < 10; j++)
+            if (track[prev_pos][j] == i)
+                col = j;
 
-    racers[i]->pos = (x + racers[i]->speed) % d;
-    if (racers[i]->pos < x)
-        racers[i]->lap++;
+        track[prev_pos][col] = -1;
 
-    track[racers[i]->pos][col] = i;
+        /*  se não tiver ninguem na frente
+              racers[i]->pos = (prev_pos + 1) % d;
+            caso contrario
+              posso ultrapassar
+                ultrapassa
+            não posso ultrapassar
+                reduz velocidade
+        */
+
+        if (track[new_pos][col] == -1) {
+            racers[i]->pos = new_pos;
+            track[new_pos][col] = i;
+        } else {
+            if ((new_col = can_overtake(i, col)) != -1) {
+                racers[i]->pos = new_pos;
+                track[new_pos][new_col] = i;
+            } else
+                racers[i]->speed = racers[track[new_pos][col]]->speed;
+        }
+
+        if (racers[i]->pos < prev_pos) {
+            racers[i]->lap++;
+            update_speed(i);
+        }
+
+        racers[i]->dt = racers[i]->speed;
+    }
+
 }
 
 void *race (void *a) {
@@ -59,22 +128,21 @@ void *race (void *a) {
         pthread_mutex_lock(&mutex);
         update_position(i);          /* Seção crítica */
         printf("[ Corredor %d ] está na posição %d.\n", i, racers[i]->pos);
-        sleep(1);
+        counter--;
+        usleep(20000);
+        pthread_mutex_unlock(&mutex);
+
         if (racers[i]->lap > v) break;
-        pthread_mutex_unlock(&mutex);
 
-        pthread_mutex_lock(&mutex);
-        counter--;                                    /* Seção crítica */
-        pthread_mutex_unlock(&mutex);
-
-        if (!counter) {
+        if (counter == 0) {
             counter = n;
             globalsense = localsense;
         }
         else while (globalsense != localsense);
     }
     printf("[ Corredor %d ] terminou!\n", i);
-    pthread_exit(NULL);
+    n--;
+    return NULL;
 }
 
 
@@ -83,9 +151,10 @@ int main(int argc, char **argv){
 
     n = atoi(argv[1]);
     d = atoi(argv[2]);
-    v = 2;
+    v = atoi(argv[3]);
 
     counter = n;
+    srand(time(NULL));
 
     tid = malloc(n * sizeof(pthread_t));
     racers = malloc(n * sizeof(Ciclista));
@@ -106,6 +175,11 @@ int main(int argc, char **argv){
         racers[i]->dt = racers[i]->speed;
     }
 
+    if (rand() % 100 < 80) {
+        flash = rand() % n;
+        printf("(Corredor %d) -> FLASH IN DA HOUSE\n", flash);
+    }
+
     for (i = 0; i < n; i++) {
         track[i / 10][i % 10] = i;
         racers[i]->pos = i / 10;
@@ -122,6 +196,8 @@ int main(int argc, char **argv){
             printf("\n ERROR joining thread");
             exit(EXIT_FAILURE);
         }
+
+    pthread_exit(NULL);
 
     return 0;
 }
