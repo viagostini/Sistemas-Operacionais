@@ -21,7 +21,7 @@
 struct ciclista {
     int lap;
     int pos;
-    int speed; /* Tempo em ms que leva para andar 1 metro */
+    int speed;          /* Tempo em ms que leva para andar 1 metro */
     int dt;
 };
 
@@ -119,8 +119,10 @@ void update_position(int i) {
 
 void *race (void *a) {
     int localsense = 0;
-    int i = *(int*) a ;
+    int i = *((int *) a);
     int r = 0;
+
+    free(a);
     printf("[ Corredor %d ] criado!\n", i);
     while (1) {
         localsense = !localsense;
@@ -185,11 +187,14 @@ int main(int argc, char **argv){
         racers[i]->pos = i / 10;
     }
 
-    for (i = 0; i < n; i++)
-        if (pthread_create(&tid[i], NULL, race, &i)) {
+    for (i = 0; i < n; i++) {
+	int *arg = malloc(sizeof(int*));
+	*arg = i;
+        if (pthread_create(&tid[i], NULL, race, (void *)arg)) {
             printf("\n ERROR creating thread");
             exit(EXIT_FAILURE);
         }
+    }
 
     for (i = 0; i < n; i++)
         if (pthread_join(tid[i], NULL)) {
