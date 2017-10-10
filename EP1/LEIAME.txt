@@ -1,0 +1,16 @@
+Compilação
+----------
+    $ make (compila tanto ep1sh quanto ep1)
+    $ make ep1sh (compila apenas ep1sh)
+    $ make ep1 (compila apenas ep1)
+
+Execução
+--------
+    $ ./ep1sh
+    $ ./ep1 s trace_file result_file [d]
+
+    s - indicador p/ escalonador (1-SJF, 2-RR, 3-PS)
+    trace_file - caminho para o arquivo de trace
+    result_file - caminho para o arquivo de saída
+    [d] - parâmetro opcional que indica a impressão de mensagens
+          de debug na saída stderr.
