@@ -14,6 +14,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <pthread.h>
 #include <time.h>
 #include <semaphore.h>
@@ -125,25 +126,40 @@ void *race (void *a) {
     free(a);
     printf("[ Corredor %d ] criado!\n", i);
     while (1) {
-        localsense = !localsense;
+        localsense = 1 - localsense;
 
         pthread_mutex_lock(&mutex);
+
         update_position(i);          /* Seção crítica */
         printf("[ Corredor %d ] está na posição %d.\n", i, racers[i]->pos);
         counter--;
-        usleep(20000);
-        pthread_mutex_unlock(&mutex);
+        usleep(10000);
 
-        if (racers[i]->lap > v) break;
-
+        if (racers[i]->lap > v)
+	    n--;
+	
         if (counter == 0) {
             counter = n;
-            globalsense = localsense;
+            globalsense = localsense;	
+            pthread_mutex_unlock(&mutex);
+	    if (racers[i]->lap > v) break;
         }
-        else while (globalsense != localsense);
+        else {
+	    if (racers[i]->lap > v) {
+		pthread_mutex_unlock(&mutex);
+		break;
+	    }
+            pthread_mutex_unlock(&mutex);
+            while (globalsense != localsense);
+        }
     }
+    //printf("--------------------------------\n");
     printf("[ Corredor %d ] terminou!\n", i);
-    n--;
+    //    printf("GLOBALSENSE = %d\n", globalsense);
+    //printf("LOCALSENSE = %d\n", localsense);
+    //printf("COUNTER = %d\n", counter);
+    //printf("N = %d\n", n);
+    //printf("--------------------------------\n");
     return NULL;
 }
 
@@ -177,7 +193,7 @@ int main(int argc, char **argv){
         racers[i]->dt = racers[i]->speed;
     }
 
-    if (rand() % 100 < 80) {
+    if (rand() % 100 < 10) {
         flash = rand() % n;
         printf("(Corredor %d) -> FLASH IN DA HOUSE\n", flash);
     }
@@ -187,6 +203,13 @@ int main(int argc, char **argv){
         racers[i]->pos = i / 10;
     }
 
+    for (i = 0; i < n; i++) {
+	for (j = 0; j < 10; j++)
+	    printf("%d ", track[i][j]);
+	printf("\n");
+    }
+
+    return 0;
     for (i = 0; i < n; i++) {
 	int *arg = malloc(sizeof(int*));
 	*arg = i;
