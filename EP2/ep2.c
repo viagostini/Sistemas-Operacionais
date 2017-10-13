@@ -1,14 +1,17 @@
-/*  Exercício Programa 2 - Sistemas Operacionais
-//  Marcelo Baiano Pastorino Trylesinski / 9297996
-//  Vinicius Perche de Toledo Agostini / 4367487
-*/
+/*  
+ *  Exercício Programa 2 - Sistemas Operacionais
+ *
+ *  Marcelo Baiano Pastorino Trylesinski |  9297996
+ *  Vinicius Perche de Toledo Agostini   |  4367487
+ *
+ */
 
 /*
     TODO
     - Sistema de Pontuação
         -> Bonus por ultrapassar geral
-    - Ciclistas quebrando
-    - Flash
+    - Ciclistas quebrando (implementado +-)
+    - Flash (ver se tá tudo certo)
     - Debug
 */
 
@@ -17,16 +20,28 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <time.h>
-#include <semaphore.h>
 
 struct ciclista {
+    int dt;
     int lap;
     int pos;
     int speed;          /* Tempo em ms que leva para andar 1 metro */
-    int dt;
+    int score;          /* Pontuação acumulada */
 };
 
 typedef struct ciclista *Ciclista;
+
+Ciclista cria_ciclista(int i) {
+    Ciclista x = malloc(sizeof(Ciclista*));
+
+    x->lap = 1;
+    x->score = 0;
+    x->speed = 120;
+    x->pos = i / 10;
+    x->dt = 120;
+
+    return x;
+}
 
 int n;                  /* Número de ciclistas */
 int d;                  /* Comprimento da pista */
@@ -110,9 +125,17 @@ void update_position(int i) {
 
         if (racers[i]->pos < prev_pos) {
             racers[i]->lap++;
+	    if (racers[i]->lap % 2 == 0 && n > 5)
+		if (rand() % 100 < 90) {
+		    printf("[ Ciclista %d ] quebrou!\n", i);
+		    n--;
+		    counter--;
+		    pthread_mutex_unlock(&mutex);
+		    pthread_exit(NULL);
+		}
             update_speed(i);
         }
-
+    
         racers[i]->dt = racers[i]->speed;
     }
 
@@ -160,7 +183,7 @@ void *race (void *a) {
     //printf("COUNTER = %d\n", counter);
     //printf("N = %d\n", n);
     //printf("--------------------------------\n");
-    return NULL;
+    pthread_exit(NULL);
 }
 
 
@@ -186,11 +209,8 @@ int main(int argc, char **argv){
             track[i][j] = -1;
 
     for (i = 0; i < n; i++) {
-        racers[i] = malloc(sizeof(Ciclista*));
-        racers[i]->speed = 120;
-        racers[i]->pos = 0;
-        racers[i]->lap = 1;
-        racers[i]->dt = racers[i]->speed;
+	racers[i] = cria_ciclista(i);
+	track[i/10][i%10] = i;
     }
 
     if (rand() % 100 < 10) {
@@ -198,18 +218,6 @@ int main(int argc, char **argv){
         printf("(Corredor %d) -> FLASH IN DA HOUSE\n", flash);
     }
 
-    for (i = 0; i < n; i++) {
-        track[i / 10][i % 10] = i;
-        racers[i]->pos = i / 10;
-    }
-
-    for (i = 0; i < n; i++) {
-	for (j = 0; j < 10; j++)
-	    printf("%d ", track[i][j]);
-	printf("\n");
-    }
-
-    return 0;
     for (i = 0; i < n; i++) {
 	int *arg = malloc(sizeof(int*));
 	*arg = i;
@@ -224,8 +232,6 @@ int main(int argc, char **argv){
             printf("\n ERROR joining thread");
             exit(EXIT_FAILURE);
         }
-
-    pthread_exit(NULL);
 
     return 0;
 }
