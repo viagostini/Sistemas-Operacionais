@@ -321,7 +321,7 @@ void update_position(int i) {
                     if (racers[j]->score > racers[i]->score)
                         more++;
                     printf("[ Ciclista %d ] quebrou na volta %d!\n", i, racers[i]->lap);
-                    printf("[ Ciclista %d ] estava na posição %d por pontos!\n", more+1);
+                    printf("[ Ciclista %d ] estava na posição %d por pontos!\n", i, more+1);
                     n--;
                     track[racers[i]->pos][find_col(i)] = -1;
                     time_ciclista[i] *= -1;
