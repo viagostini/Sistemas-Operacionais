@@ -50,6 +50,7 @@ int d;                  /* Comprimento da pista */
 int v;                  /* Número de voltas */
 int **track;            /* Matriz d x 10 */
 int **ult;              /* ult[i][j] := # de vezes que i ultrapassou j */
+int *time_ciclista;     /* Tempo de corrida de cada ciclista */
 Ciclista* racers;       /* Vetor de ciclistas */
 
 int flash = -1;
@@ -63,6 +64,9 @@ pthread_mutex_t mutex;
 /* -------------------------------------------------------------------------- */
 /* ------------------------------  PROTÓTIPOS  ------------------------------ */
 /* -------------------------------------------------------------------------- */
+
+/* A função print_finish() imprime na tela as pontuações finais. */
+void print_finish();
 
 /* A função cria_ciclista() cria um ciclista com id i e devolve esse ciclista. */
 Ciclista cria_ciclista(int i);
@@ -131,6 +135,10 @@ int main(int argc, char **argv){
     racers = malloc(N * sizeof(Ciclista));
     track = malloc(d * sizeof(int*));
     ult = malloc(N * sizeof(int*));
+    time_ciclista = malloc(N * sizeof(int));
+
+    for (i = 0; i < N; i++)
+        time_ciclista[i] = 0;
 
     for (i = 0; i < d; i++)
         track[i] = malloc(10 * sizeof(int));
@@ -167,8 +175,7 @@ int main(int argc, char **argv){
         }
     }
 
-    printf("Finished = %d\n", finished);
-    printf("Exited = %d\n", exited);
+    print_finish();
 
     pthread_exit(NULL);
     pthread_mutex_destroy(&mutex);
@@ -179,6 +186,16 @@ int main(int argc, char **argv){
 /* ------------------------------------------------------------------------- */
 /* -------------------------------  FUNÇÕES  ------------------------------- */
 /* ------------------------------------------------------------------------- */
+
+void print_finish() {
+    int i;
+    for (i = 0; i < N; i++) {
+        if (time_ciclista[i] < 0)
+            printf("[ Ciclista %d ] quebrou no tempo %dms\n", i, -time_ciclista[i]);
+        else
+            printf("[ Ciclista %d ] terminou no tempo %dms\n", i, time_ciclista[i]);
+    }
+}
 
 Ciclista cria_ciclista(int i) {
     Ciclista x = malloc(sizeof(Ciclista*));
@@ -257,10 +274,13 @@ void update_position(int i) {
     int prev_pos = racers[i]->pos;
     int new_pos = (prev_pos + 1) % d;
 
-    if ((flash != -1) && (racers[flash]->lap >= v - 1))
+    if ((flash != -1) && (racers[flash]->lap >= v - 1)) {
+        time_ciclista[i] += 20;
         racers[i]->dt -= 20;
-    else
+    } else {
+        time_ciclista[i] += 60;
         racers[i]->dt -= 60;
+    }
 
     if (racers[i]->dt == 0) {
         col = find_col(i);
@@ -301,6 +321,7 @@ void update_position(int i) {
                     printf("[ Ciclista %d ] estava na posição %d por pontos!\n", more+1);
                     n--;
                     track[racers[i]->pos][find_col(i)] = -1;
+                    time_ciclista[i] *= -1;
                     pthread_mutex_unlock(&mutex);
                     pthread_exit(NULL);
                 }
