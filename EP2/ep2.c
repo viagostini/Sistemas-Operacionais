@@ -8,8 +8,6 @@
 
 /*
     TODO
-    - O PRINT DA MAIN TA FORA DO Tempo
-        -> Join não funciona direito
     - Print final
     - Sistema de Pontuação - implementado
         -> Bonus por ultrapassar geral
@@ -36,7 +34,6 @@ struct ciclista {
 
 typedef struct ciclista *Ciclista;
 
-
 int exited = 0;
 int finished = 0;
 int lap_completed = -1;
@@ -58,6 +55,30 @@ int globalsense = 0;
 
 pthread_t *tid;
 pthread_mutex_t mutex;
+
+/* A função cria_ciclista() cria um ciclista com id i e devolve esse ciclista. */
+Ciclista cria_ciclista(int i);
+
+/* A função print_track() imprime na tela a pista. As posições com '--' sinalizam
+// posições sem ciclistas e os números representam os ciclistas. */
+void print_track();
+
+/* A função update_speed() atualiza a velocidade do ciclista i. */
+void update_speed(int i);
+
+/* A função can_overtake() verifica se o ciclista i pode fazer a ultrapassagem
+// em alguma faixa com valor maior que col. Devolve -1 caso não encontre nenhuma
+// faixa possível ou o número da faixa encontrada. */
+int can_overtake(int i, int col);
+
+/* A função find_col() encontra a faixa em que o ciclista i está. */
+int find_col(int i);
+
+/* A função update_position() atualiza a posição do ciclista i. */
+void update_position(int i);
+
+/* A função compare_score() */
+int compare_score(const void *a, const void *b);
 
 Ciclista cria_ciclista(int i) {
     Ciclista x = malloc(sizeof(Ciclista*));
@@ -372,7 +393,7 @@ int main(int argc, char **argv){
         for (j = 0; j < 10; j++)
             track[i][j] = -1;
 
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < N; i++) {
         ult[i] = malloc(N * sizeof(int));
     	racers[i] = cria_ciclista(i);
         if (i < 10)
@@ -381,12 +402,10 @@ int main(int argc, char **argv){
             track[d-(i/10)][i%10] = i;
     }
 
-    if (rand() % 100 < 10) {
-        flash = rand() % n;
-        printf("(Corredor %d) -> Flash\n", flash);
-    }
+    if (rand() % 100 < 10)
+        flash = rand() % N;
 
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < N; i++) {
 	int *arg = malloc(sizeof(int*));
 	*arg = i;
         if (pthread_create(&tid[i], NULL, race, (void *)arg)) {
@@ -395,16 +414,13 @@ int main(int argc, char **argv){
         }
     }
 
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < N; i++) {
         if (pthread_join(tid[i], NULL)) {
             printf("\n ERROR joining thread");
             exit(EXIT_FAILURE);
-        } else {
-            a++;
         }
     }
 
-    while(a < n);
     printf("Finished = %d\n", finished);
     printf("Exited = %d\n", exited);
 
