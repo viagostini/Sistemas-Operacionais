@@ -16,6 +16,7 @@
     - Testes
     - Apresentação
     - Scripts
+    - Mudei saída do debug pra stderr para testes
 */
 
 #include <stdio.h>
@@ -85,11 +86,11 @@ void print_track() {
     for (i = 0; i < d; i++) {
         for (j = 0; j < 10; j++) {
             if (track[i][j] == -1)
-                printf("-- ");
+                fprintf(stderr, "-- ");
             else
-                printf("%2d ", track[i][j]);
+                fprintf(stderr, "%2d ", track[i][j]);
         }
-        printf("\n");
+        fprintf(stderr, "\n");
     }
 }
 
@@ -198,7 +199,7 @@ void update_position(int i) {
         racers[i]->dt = racers[i]->speed;
     }
     if (DEBUG) {
-        printf("\n--------------  TRACK  --------------\n\n");
+        fprintf(stderr, "\n--------------  TRACK  --------------\n\n");
         print_track();
     }
 }
