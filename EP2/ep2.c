@@ -8,12 +8,10 @@
 
 /*
     TODO
-    - Print final
-    - Sistema de Pontuação - implementado
-        -> Bonus por ultrapassar geral
     - Testes
     - Apresentação
-    - Scripts
+        -> Decisão: classificação depende da ordem na barreira
+    - Script
     - Mudei saída do debug pra stderr para testes
 */
 
@@ -38,7 +36,6 @@ struct ciclista {
 
 typedef struct ciclista *Ciclista;
 
-int exited = 0;
 int finished = 0;
 int lap_completed = -1;
 
@@ -49,8 +46,8 @@ int n;                  /* Número de ciclistas ainda correndo */
 int d;                  /* Comprimento da pista */
 int v;                  /* Número de voltas */
 int **track;            /* Matriz d x 10 */
-int **ult;              /* ult[i][j] := # de vezes que i ultrapassou j */
 int *time_ciclista;     /* Tempo de corrida de cada ciclista */
+int *lap_diff;
 Ciclista* racers;       /* Vetor de ciclistas */
 
 int flash = -1;
@@ -64,6 +61,9 @@ pthread_mutex_t mutex;
 /* -------------------------------------------------------------------------- */
 /* ------------------------------  PROTÓTIPOS  ------------------------------ */
 /* -------------------------------------------------------------------------- */
+
+/* A função has_bonus() verifica se o ciclista i deve ganhar pontos bônus. */
+void has_bonus(int i);
 
 /* A função print_finish() imprime na tela as pontuações finais. */
 void print_finish();
@@ -134,11 +134,8 @@ int main(int argc, char **argv){
     tid = malloc(N * sizeof(pthread_t));
     racers = malloc(N * sizeof(Ciclista));
     track = malloc(d * sizeof(int*));
-    ult = malloc(N * sizeof(int*));
+    lap_diff = malloc(N * sizeof(int));
     time_ciclista = malloc(N * sizeof(int));
-
-    for (i = 0; i < N; i++)
-        time_ciclista[i] = 0;
 
     for (i = 0; i < d; i++)
         track[i] = malloc(10 * sizeof(int));
@@ -148,7 +145,8 @@ int main(int argc, char **argv){
             track[i][j] = -1;
 
     for (i = 0; i < N; i++) {
-        ult[i] = malloc(N * sizeof(int));
+        time_ciclista[i] = 0;
+        lap_diff[i] = 2;
     	racers[i] = cria_ciclista(i);
         if (i < 10)
             track[0][i] = i;
@@ -175,6 +173,7 @@ int main(int argc, char **argv){
         }
     }
 
+    finished = 1;
     print_finish();
 
     pthread_exit(NULL);
@@ -309,11 +308,11 @@ void update_position(int i) {
 
             lap_completed = i;
 
+            has_bonus(lap_completed);
+
             /* Se ciclista terminou, retira de track[][] */
-            if (racers[i]->lap > v) {
-                finished++;
+            if (racers[i]->lap > v)
                 track[racers[i]->pos][find_col(i)] = -1;
-            }
 
             if (racers[i]->lap % 15 == 0 && n > 5) {
                 if (rand() % 100 < 1) {
@@ -339,6 +338,22 @@ void update_position(int i) {
         fprintf(stderr, "\n--------------  TRACK  --------------\n\n");
         print_track();
     }
+}
+
+void has_bonus(int i) {
+    int j;
+    Ciclista *arr = sort_by_pos();
+
+    if (arr[0]->id == i)
+        for (j = 0; j < N; j++)
+            if (i != j && lap_diff[i] == racers[i]->lap - racers[j]->lap) {
+                lap_diff[i]++;
+                racers[i]->score += 20;
+            }
+
+    for (j = 0; j < N; j++)
+        free(arr[j]);
+    free(arr);
 }
 
 int compare_score(const void *a, const void *b) {
@@ -395,9 +410,10 @@ void calculate_score() {
 }
 
 void print_score() {
-    if (lap_completed != -1 &&
-        racers[lap_completed]->lap % 2 == 0 &&
-        racers[lap_completed]->lap > 1) {
+    if ((lap_completed != -1 &&
+        racers[lap_completed]->lap % 10 == 0 &&
+        racers[lap_completed]->lap > 1) ||
+        finished) {
 
             int i;
 
@@ -412,11 +428,13 @@ void print_score() {
 
             qsort(arr, N, sizeof(Ciclista*), compare_score);
 
+            printf("\n-------- PONTUAÇÃO --------\n\n");
             for (i = 0; i < N; i++) {
                 printf("[ Ciclista %d ] -> %d pontos!\n", arr[i]->id, arr[i]->score);
                 free(arr[i]);
             }
             free(arr);
+            printf("\n--------------------------\n");
         }
     }
 
@@ -424,11 +442,13 @@ void print_position() {
         if (lap_completed != -1) {
             int i;
             Ciclista *arr = sort_by_pos();
+            printf("\n-------- POSIÇÕES --------\n\n");
             for (i = 0; i < N; i++) {
                 printf("%dº -> [ Ciclista %d ]\n", i+1, arr[i]->id);
                 free(arr[i]);
             }
             free(arr);
+            printf("\n--------------------------\n");
         }
         lap_completed = -1;
     }
@@ -439,7 +459,7 @@ void *race(void *a) {
         int r = 0;
 
         free(a);
-        printf("[ Corredor %d ] criado!\n", i);
+        //printf("[ Corredor %d ] criado!\n", i);
         while (1) {
             localsense = 1 - localsense;
 
@@ -447,7 +467,7 @@ void *race(void *a) {
 
             counter--;
             update_position(i);          /* Seção crítica */
-            printf("[ Corredor %d ] está na posição %d.\n", i, racers[i]->pos);
+            //printf("[ Corredor %d ] está na posição %d.\n", i, racers[i]->pos);
 
             if (racers[i]->lap > v)
                 n--;
@@ -467,15 +487,5 @@ void *race(void *a) {
                 while (globalsense != localsense);
             }
         }
-        //printf("--------------------------------\n");
-        printf("[ Corredor %d ] terminou!\n", i);
-        //    printf("GLOBALSENSE = %d\n", globalsense);
-        //printf("LOCALSENSE = %d\n", localsense);
-        //printf("COUNTER = %d\n", counter);
-        //printf("N = %d\n", n);
-        //printf("--------------------------------\n");
-        pthread_mutex_lock(&mutex);
-        exited++;
-        pthread_mutex_unlock(&mutex);
         return NULL;
     }
