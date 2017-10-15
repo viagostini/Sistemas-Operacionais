@@ -237,15 +237,16 @@ void update_speed(int i) {
 
     int r = rand() %  100;
 
-    if (prev == 120)
-    if (r < 70)
-    racers[i]->speed = 60;
-    else if (prev == 60)
-    if (r < 50)
-    racers[i]->speed = 120;
+    if (prev == 120) {
+        if (r < 70)
+            racers[i]->speed = 60;
+    } else if (prev == 60) {
+        if (r < 50)
+            racers[i]->speed = 120;
+    }
 
     if ((flash != -1) && (racers[flash]->lap == v - 1))
-    racers[flash]->speed = 40;
+        racers[flash]->speed = 40;
 }
 
 int can_overtake(int i, int col) {
@@ -444,7 +445,6 @@ void *race(void *a) {
             counter--;
             update_position(i);          /* Seção crítica */
             printf("[ Corredor %d ] está na posição %d.\n", i, racers[i]->pos);
-            usleep(10000);
 
             if (racers[i]->lap > v)
                 n--;
