@@ -23,6 +23,10 @@
 #include <pthread.h>
 #include <time.h>
 
+/* ------------------------------------------------------------------------- */
+/* --------------------------  VARIÁVEIS GLOBAIS  -------------------------- */
+/* ------------------------------------------------------------------------- */
+
 struct ciclista {
     int id;
     int dt;
@@ -56,6 +60,10 @@ int globalsense = 0;
 pthread_t *tid;
 pthread_mutex_t mutex;
 
+/* -------------------------------------------------------------------------- */
+/* ------------------------------  PROTÓTIPOS  ------------------------------ */
+/* -------------------------------------------------------------------------- */
+
 /* A função cria_ciclista() cria um ciclista com id i e devolve esse ciclista. */
 Ciclista cria_ciclista(int i);
 
@@ -77,8 +85,100 @@ int find_col(int i);
 /* A função update_position() atualiza a posição do ciclista i. */
 void update_position(int i);
 
-/* A função compare_score() */
+/* A função compare_score() compara os ciclistas a e b. Devolve a subtração
+// da pontuação de b pela de a. */
 int compare_score(const void *a, const void *b);
+
+/* A função compare_position() compara os ciclistas a e b. Devolve um número
+// positivo caso b esteja na frente de a e negativo caso contrário. */
+int compare_position(const void *a, const void *b);
+
+/* A função sort_by_pos() devolve um vetor de ciclistas ordenado pela posição. */
+Ciclista *sort_by_pos();
+
+/* A função calculate_score() atualiza a pontuação de cada ciclista. */
+void calculate_score();
+
+/* A função print_score() imprime na tela a pontuação de todos os ciclistas. */
+void print_score();
+
+/* A função print_position() imprime na tela a posição de todos os ciclistas. */
+void print_position();
+
+/* A função race() é a thread do ciclista a. */
+void *race(void *a);
+
+/* -------------------------------------------------------------------------- */
+/* ---------------------------------  MAIN  --------------------------------- */
+/* -------------------------------------------------------------------------- */
+
+int main(int argc, char **argv){
+    int i, j;
+    int a = 0;
+
+    N = n = atoi(argv[1]);
+    d = atoi(argv[2]);
+    v = atoi(argv[3]);
+
+    if (argc == 5 && argv[4][0] == 'd')
+        DEBUG = 1;
+
+    counter = N;
+    srand(time(NULL));
+    pthread_mutex_init(&mutex, NULL);
+
+    tid = malloc(N * sizeof(pthread_t));
+    racers = malloc(N * sizeof(Ciclista));
+    track = malloc(d * sizeof(int*));
+    ult = malloc(N * sizeof(int*));
+
+    for (i = 0; i < d; i++)
+        track[i] = malloc(10 * sizeof(int));
+
+    for (i = 0; i < d; i++)
+        for (j = 0; j < 10; j++)
+            track[i][j] = -1;
+
+    for (i = 0; i < N; i++) {
+        ult[i] = malloc(N * sizeof(int));
+    	racers[i] = cria_ciclista(i);
+        if (i < 10)
+            track[0][i] = i;
+        else
+            track[d-(i/10)][i%10] = i;
+    }
+
+    if (rand() % 100 < 10)
+        flash = rand() % N;
+
+    for (i = 0; i < N; i++) {
+        int *arg = malloc(sizeof(int*));
+        *arg = i;
+        if (pthread_create(&tid[i], NULL, race, (void *)arg)) {
+            printf("\n ERROR creating thread");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    for (i = 0; i < N; i++) {
+        if (pthread_join(tid[i], NULL)) {
+            printf("\n ERROR joining thread");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    printf("Finished = %d\n", finished);
+    printf("Exited = %d\n", exited);
+
+    pthread_exit(NULL);
+    pthread_mutex_destroy(&mutex);
+
+    return 0;
+}
+
+/* ------------------------------------------------------------------------- */
+/* -------------------------------  FUNÇÕES  ------------------------------- */
+/* ------------------------------------------------------------------------- */
 
 Ciclista cria_ciclista(int i) {
     Ciclista x = malloc(sizeof(Ciclista*));
@@ -121,14 +221,14 @@ void update_speed(int i) {
     int r = rand() %  100;
 
     if (prev == 120)
-        if (r < 70)
-            racers[i]->speed = 60;
+    if (r < 70)
+    racers[i]->speed = 60;
     else if (prev == 60)
-        if (r < 50)
-            racers[i]->speed = 120;
+    if (r < 50)
+    racers[i]->speed = 120;
 
     if ((flash != -1) && (racers[flash]->lap == v - 1))
-        racers[flash]->speed = 40;
+    racers[flash]->speed = 40;
 }
 
 int can_overtake(int i, int col) {
@@ -167,15 +267,6 @@ void update_position(int i) {
 
         track[prev_pos][col] = -1;
 
-        /*  se não tiver ninguem na frente
-              racers[i]->pos = (prev_pos + 1) % d;
-            caso contrario
-              posso ultrapassar
-                ultrapassa
-            não posso ultrapassar
-                reduz velocidade
-        */
-
         if (track[new_pos][col] == -1) {
             racers[i]->pos = new_pos;
             track[new_pos][col] = i;
@@ -200,19 +291,19 @@ void update_position(int i) {
                 track[racers[i]->pos][find_col(i)] = -1;
             }
 
-	        if (racers[i]->lap % 15 == 0 && n > 5) {
-        		if (rand() % 100 < 1) {
+            if (racers[i]->lap % 15 == 0 && n > 5) {
+                if (rand() % 100 < 1) {
                     int more = 0;
                     for (j = 0; j < N; j++)
-                        if (racers[j]->score > racers[i]->score)
-                            more++;
+                    if (racers[j]->score > racers[i]->score)
+                        more++;
                     printf("[ Ciclista %d ] quebrou na volta %d!\n", i, racers[i]->lap);
                     printf("[ Ciclista %d ] estava na posição %d por pontos!\n", more+1);
-        		    n--;
+                    n--;
                     track[racers[i]->pos][find_col(i)] = -1;
-        		    pthread_mutex_unlock(&mutex);
-        		    pthread_exit(NULL);
-        		}
+                    pthread_mutex_unlock(&mutex);
+                    pthread_exit(NULL);
+                }
             }
             if (racers[i]->lap > 1)
                 update_speed(i);
@@ -225,7 +316,7 @@ void update_position(int i) {
     }
 }
 
-int compare_score (const void *a, const void *b) {
+int compare_score(const void *a, const void *b) {
     Ciclista nA, nB;
 
     nA = *((Ciclista *) a);
@@ -234,7 +325,7 @@ int compare_score (const void *a, const void *b) {
     return (nB->score - nA->score);
 }
 
-int compare_position (const void *a, const void *b) {
+int compare_position(const void *a, const void *b) {
     Ciclista nA, nB;
 
     nA = *((Ciclista *) a);
@@ -280,152 +371,87 @@ void calculate_score() {
 
 void print_score() {
     if (lap_completed != -1 &&
-            racers[lap_completed]->lap % 2 == 0 &&
-            racers[lap_completed]->lap > 1) {
+        racers[lap_completed]->lap % 2 == 0 &&
+        racers[lap_completed]->lap > 1) {
 
-        int i;
+            int i;
 
-        calculate_score();
+            calculate_score();
 
-        Ciclista *arr = malloc(N * sizeof(Ciclista));
+            Ciclista *arr = malloc(N * sizeof(Ciclista));
 
-        for (i = 0; i < N; i++) {
-            arr[i] = malloc(sizeof(Ciclista*));
-            *arr[i] = *racers[i];
+            for (i = 0; i < N; i++) {
+                arr[i] = malloc(sizeof(Ciclista*));
+                *arr[i] = *racers[i];
+            }
+
+            qsort(arr, N, sizeof(Ciclista*), compare_score);
+
+            for (i = 0; i < N; i++) {
+                printf("[ Ciclista %d ] -> %d pontos!\n", arr[i]->id, arr[i]->score);
+                free(arr[i]);
+            }
+            free(arr);
         }
-
-        qsort(arr, N, sizeof(Ciclista*), compare_score);
-
-        for (i = 0; i < N; i++) {
-            printf("[ Ciclista %d ] -> %d pontos!\n", arr[i]->id, arr[i]->score);
-            free(arr[i]);
-        }
-        free(arr);
     }
-}
 
 void print_position() {
-    if (lap_completed != -1) {
-        int i;
-        Ciclista *arr = sort_by_pos();
-        for (i = 0; i < N; i++) {
-            printf("%dº -> [ Ciclista %d ]\n", i+1, arr[i]->id);
-            free(arr[i]);
+        if (lap_completed != -1) {
+            int i;
+            Ciclista *arr = sort_by_pos();
+            for (i = 0; i < N; i++) {
+                printf("%dº -> [ Ciclista %d ]\n", i+1, arr[i]->id);
+                free(arr[i]);
+            }
+            free(arr);
         }
-        free(arr);
+        lap_completed = -1;
     }
-    lap_completed = -1;
-}
 
-void *race (void *a) {
-    int localsense = 0;
-    int i = *((int *) a);
-    int r = 0;
+void *race(void *a) {
+        int localsense = 0;
+        int i = *((int *) a);
+        int r = 0;
 
-    free(a);
-    printf("[ Corredor %d ] criado!\n", i);
-    while (1) {
-        localsense = 1 - localsense;
+        free(a);
+        printf("[ Corredor %d ] criado!\n", i);
+        while (1) {
+            localsense = 1 - localsense;
 
-        pthread_mutex_lock(&mutex);
+            pthread_mutex_lock(&mutex);
 
-        counter--;
-        update_position(i);          /* Seção crítica */
-        printf("[ Corredor %d ] está na posição %d.\n", i, racers[i]->pos);
-        usleep(10000);
+            counter--;
+            update_position(i);          /* Seção crítica */
+            printf("[ Corredor %d ] está na posição %d.\n", i, racers[i]->pos);
+            usleep(10000);
 
-        if (racers[i]->lap > v)
-	        n--;
-
-        if (counter == 0) {
-            print_score();
-            print_position();
-            counter = n;
-            globalsense = localsense;
-            pthread_mutex_unlock(&mutex);
-	        if (racers[i]->lap > v) break;
-        }
-        else {
-            pthread_mutex_unlock(&mutex);
             if (racers[i]->lap > v)
+                n--;
+
+            if (counter == 0) {
+                print_score();
+                print_position();
+                counter = n;
+                globalsense = localsense;
+                pthread_mutex_unlock(&mutex);
+                if (racers[i]->lap > v) break;
+            }
+            else {
+                pthread_mutex_unlock(&mutex);
+                if (racers[i]->lap > v)
                 break;
-            while (globalsense != localsense);
+                while (globalsense != localsense);
+            }
         }
+        //printf("--------------------------------\n");
+        printf("[ Corredor %d ] terminou!\n", i);
+        //    printf("GLOBALSENSE = %d\n", globalsense);
+        //printf("LOCALSENSE = %d\n", localsense);
+        //printf("COUNTER = %d\n", counter);
+        //printf("N = %d\n", n);
+        //printf("--------------------------------\n");
+        pthread_mutex_lock(&mutex);
+        exited++;
+        pthread_mutex_unlock(&mutex);
+        return NULL;
     }
-    //printf("--------------------------------\n");
-    printf("[ Corredor %d ] terminou!\n", i);
-    //    printf("GLOBALSENSE = %d\n", globalsense);
-    //printf("LOCALSENSE = %d\n", localsense);
-    //printf("COUNTER = %d\n", counter);
-    //printf("N = %d\n", n);
-    //printf("--------------------------------\n");
-    pthread_mutex_lock(&mutex);
-    exited++;
-    pthread_mutex_unlock(&mutex);
-    return NULL;
-}
-
-
-int main(int argc, char **argv){
-    int i, j;
-    int a = 0;
-
-    N = n = atoi(argv[1]);
-    d = atoi(argv[2]);
-    v = atoi(argv[3]);
-
-    if (argc == 5 && argv[4][0] == 'd')
-        DEBUG = 1;
-
-    counter = N;
-    srand(time(NULL));
-    pthread_mutex_init(&mutex, NULL);
-
-    tid = malloc(N * sizeof(pthread_t));
-    racers = malloc(N * sizeof(Ciclista));
-    track = malloc(d * sizeof(int*));
-    ult = malloc(N * sizeof(int*));
-
-    for (i = 0; i < d; i++)
-        track[i] = malloc(10 * sizeof(int));
-
-    for (i = 0; i < d; i++)
-        for (j = 0; j < 10; j++)
-            track[i][j] = -1;
-
-    for (i = 0; i < N; i++) {
-        ult[i] = malloc(N * sizeof(int));
-    	racers[i] = cria_ciclista(i);
-        if (i < 10)
-            track[0][i] = i;
-        else
-            track[d-(i/10)][i%10] = i;
-    }
-
-    if (rand() % 100 < 10)
-        flash = rand() % N;
-
-    for (i = 0; i < N; i++) {
-	int *arg = malloc(sizeof(int*));
-	*arg = i;
-        if (pthread_create(&tid[i], NULL, race, (void *)arg)) {
-            printf("\n ERROR creating thread");
-            exit(EXIT_FAILURE);
-        }
-    }
-
-    for (i = 0; i < N; i++) {
-        if (pthread_join(tid[i], NULL)) {
-            printf("\n ERROR joining thread");
-            exit(EXIT_FAILURE);
-        }
-    }
-
-    printf("Finished = %d\n", finished);
-    printf("Exited = %d\n", exited);
-
-    pthread_exit(NULL);
-    pthread_mutex_destroy(&mutex);
-
-    return 0;
-}
