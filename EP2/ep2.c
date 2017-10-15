@@ -189,9 +189,12 @@ int main(int argc, char **argv){
 
 void print_finish() {
     int i;
+
+    print_score();
+
     for (i = 0; i < N; i++) {
         if (time_ciclista[i] < 0)
-            printf("[ Ciclista %d ] quebrou no tempo %dms\n", i, -time_ciclista[i]);
+            printf("[ Ciclista %d ] quebrou na volta %d\n", i, racers[i]->lap);
         else
             printf("[ Ciclista %d ] terminou no tempo %dms\n", i, time_ciclista[i]);
     }
