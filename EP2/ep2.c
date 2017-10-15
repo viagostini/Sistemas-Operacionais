@@ -155,14 +155,14 @@ int main(int argc, char **argv){
         int *arg = malloc(sizeof(int*));
         *arg = i;
         if (pthread_create(&tid[i], NULL, race, (void *)arg)) {
-            printf("\n ERROR creating thread");
+            fprintf(stderr, "%s", "\n ERROR creating thread");
             exit(EXIT_FAILURE);
         }
     }
 
     for (i = 0; i < N; i++) {
         if (pthread_join(tid[i], NULL)) {
-            printf("\n ERROR joining thread");
+            fprintf(stderr, "%s", "\n ERROR joining thread");
             exit(EXIT_FAILURE);
         }
     }
