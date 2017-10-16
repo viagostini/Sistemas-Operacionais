@@ -17,17 +17,18 @@ n = sys.argv[1]
 d = sys.argv[2]
 v = sys.argv[3]
 
-num = 4
+num = 30
 
-for i in xrange(1, num):
-    tempo_file_path = "".join(['tempos/tempo_', n, '.', d, '.', v, '.', str(i)])
-    #memoria_file_path = "".join(['memoria/memoria_', n, '.', d, '.', v, '.', str(i)])
+tempo_file = "".join(['tempos/tempo_', n, '.', d, '.', v])
+#memoria_file = "".join(['memoria/memoria_', n, '.', d, '.', v, '.', str(i)])
 
-    with open(tempo_file_path, 'r') as f:
-        tempos.append(float(f.read().split('\n')[-2]))
+with open(tempo_file, 'r') as f:
+    for line in f:
+        print(float(line))
+        tempos.append(float(line))
 
-    #with open(memoria_file_path, 'r') as f:
-    #    memorias.append(float(last = f.read().split('\n')[-2]))
+#with open(memoria_file_path, 'r') as f:
+#    memorias.append(float(last = f.read().split('\n')[-2]))
 
 media_tempo = sum(tempos)/num
 #media_memoria = sum(memorias)/30
@@ -45,9 +46,9 @@ print 'Desvio padrao do tempo de execucao:', std_tempo
 offset_tempo = 1.96 * (std_tempo / math.sqrt(num))
 #offset_memoria = 1.96 * (std_memoria / math.sqrt(num))
 
-print 'Intervalo de confianca para tempo de execucao: (', \
-    media_tempo - offset_tempo, ',', media_tempo + offset_tempo,\
-    ')'
+print 'Intervalo de confianca para tempo de execucao: (', offset_tempo, ')'
+#    media_tempo - offset_tempo, ',', media_tempo + offset_tempo,\
+#    ')'
 #print 'Intervalo de confianca para processos finalizados: (', \
 #    media_finished - offset_memoria, ',', media_finished + offset_memoria,\
 #    ')'

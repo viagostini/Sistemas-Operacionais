@@ -6,15 +6,6 @@
  *
  */
 
-/*
-    TODO
-    - Testes
-    - Apresentação
-        -> Decisão: classificação depende da ordem na barreira
-    - Script
-    - Mudei saída do debug pra stderr para testes
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -178,6 +169,14 @@ int main(int argc, char **argv){
 
     pthread_exit(NULL);
     pthread_mutex_destroy(&mutex);
+
+    free(tid);
+    free(racers);
+    for (j = 0; j < d; j++)
+        free(track[j]);
+    free(track);
+    free(lap_diff);
+    free(time_ciclista);
 
     return 0;
 }
@@ -459,15 +458,11 @@ void *race(void *a) {
         int r = 0;
 
         free(a);
-        //printf("[ Corredor %d ] criado!\n", i);
         while (1) {
             localsense = 1 - localsense;
-
             pthread_mutex_lock(&mutex);
-
             counter--;
-            update_position(i);          /* Seção crítica */
-            //printf("[ Corredor %d ] está na posição %d.\n", i, racers[i]->pos);
+            update_position(i);
 
             if (racers[i]->lap > v)
                 n--;
@@ -484,7 +479,7 @@ void *race(void *a) {
                 pthread_mutex_unlock(&mutex);
                 if (racers[i]->lap > v)
                 break;
-                while (globalsense != localsense);
+                while (globalsense != localsense) usleep(10);
             }
         }
         return NULL;
