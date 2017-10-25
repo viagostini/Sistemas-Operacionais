@@ -1,0 +1,15 @@
+# Exercicio Programa 2 - Sistemas Operacionais
+#
+# Marcelo Baiano Pastorino Trylesinski	|  9297996
+# Vinicius Perche de Toledo Agostini	|  4367487
+
+Compilação:
+    $ make
+
+Execução:
+    ./ep2 n d v [d]
+
+        n - numero de ciclistas
+        d - tamanho da pista
+        v - numero de voltas
+        [d] - parametro opcional para debug (debug sai em stderr)
