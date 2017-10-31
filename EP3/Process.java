@@ -59,35 +59,35 @@ public class Process {
 	/**
 	* Devolve o tempo de chegada do processo
 	*/
-	public int getT0() {
+	public int t0() {
 		return t0;
 	}
 
 	/**
 	* Devolve o tempo de finalização do processo
 	*/
-	public int getTf() {
+	public int tf() {
 		return tf;
 	}
 
 	/**
 	* Devolve a base do espaço de endereço do processo
 	*/
-	public int getBase() {
+	public int base() {
 		return base;
 	}
 
 	/**
 	* Devolve o limite do espaço de endereço do processo
 	*/
-	public int getLimit() {
+	public int limit() {
 		return limit;
 	}
 
 	/**
 	* Devolve o nome do processo
 	*/
-	public String getName() {
+	public String name() {
 		return name;
 	}
 
