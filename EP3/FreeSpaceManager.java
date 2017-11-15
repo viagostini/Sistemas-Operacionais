@@ -102,8 +102,6 @@ public abstract class FreeSpaceManager {
             File vm = new File("/tmp/ep3.vir");
             fm.delete();
             vm.delete();
-            fmem.close();
-            vmem.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
