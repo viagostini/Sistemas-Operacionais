@@ -11,7 +11,7 @@ public class WorstFit extends FreeSpaceManager {
         int i, j, idx, max, blockSize;
         i = 0;
         idx = -1;
-        max = this.bitmapSize;
+        max = -1;
 
         while (i < this.bitmapSize) {
             while (this.bitmap.get(i++));
@@ -20,8 +20,9 @@ public class WorstFit extends FreeSpaceManager {
 
             while (!this.bitmap.get(j) && j < this.bitmapSize)
                 j++;
-            
-            blockSize = j - i - 1;
+
+            // talvez precise de -1
+            blockSize = j - i;
 
             if (blockSize >= p.size() && blockSize > max) {
                 max = blockSize;
