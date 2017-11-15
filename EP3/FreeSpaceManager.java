@@ -3,6 +3,7 @@ import java.util.LinkedList;
 import java.io.RandomAccessFile;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.File;
 
 public abstract class FreeSpaceManager {
     protected int allocUnitSize;
@@ -88,6 +89,21 @@ public abstract class FreeSpaceManager {
             for (int i = 0; i < units; i++)
                 System.out.print(fmem.readInt() + " ");
             System.out.println();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void deleteMemoryFiles () {
+        try {
+            fmem.close();
+            vmem.close();
+            File fm = new File("/tmp/ep3.mem");
+            File vm = new File("/tmp/ep3.vir");
+            fm.delete();
+            vm.delete();
+            fmem.close();
+            vmem.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

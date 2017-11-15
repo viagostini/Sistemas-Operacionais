@@ -81,5 +81,7 @@ public class MemoryManager {
             else if (line[0].equals("sai"))
                 break;
         }
+
+        FSM.deleteMemoryFiles();
     }
 }
