@@ -46,7 +46,9 @@ public class BestFit extends FreeSpaceManager {
         if (freeBlocks.get(idx).full())
             freeBlocks.remove(idx);
 
-        p.setAddress(memBlock.getBase(), memBlock.getBase() + p.size() - 1);
+        p.setAddress(memBlock.getBase(), memBlock.getLimit());
+
+        this.updateMemorySlots (p.getPID(), memBlock.getBase(), p.size());
     }
 
 
