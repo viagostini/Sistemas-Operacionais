@@ -1,4 +1,5 @@
 public class MemBlock {
+    private boolean isProcess;
     private int base;
     private int limit;
     private int size;
