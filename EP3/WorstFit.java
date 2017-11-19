@@ -7,31 +7,33 @@ public class WorstFit extends FreeSpaceManager {
         super(allocUnitSize, memSize);
     }
 
-    public void add (Process p) {
-        int i, j, idx, max, blockSize;
-        i = 0;
-        idx = -1;
-        max = -1;
+    public void addProcess (Process p) {
+        int i;
+        int idx = -1;
+        int max = -1;
 
-        while (i < this.bitmapSize) {
-            while (this.bitmap.get(i++));
-
-            j = i;
-
-            while (!this.bitmap.get(j) && j < this.bitmapSize)
-                j++;
-
-            // talvez precise de -1
-            blockSize = j - i;
-
-            if (blockSize >= p.size() && blockSize > max) {
-                max = blockSize;
+        for (i = 0; i < freeBlocks.size(); i++) {
+            int blockSize = freeBlocks.get(i).size();
+            if (blockSize >= p.size() && blockSize >= max) {
+                min = blockSize;
                 idx = i;
             }
-            i = j;
         }
-        this.bitmap.set(idx, idx + p.size(), true);
-        p.setAddress(idx, idx + p.size());
+        // Bloco idx será ocupado pelo processo p
+        MemBlock memBlock = freeBlocks.get(idx);
+        for (i = 0; i < usedBlocks.size(); i++)
+            if (memBlock.getBase() > usedBlocks.get(i).getLimit())
+                break;
+        usedBlocks.add(i, memBlock);
+
+        // junta blocos quebrados que se tornaram contíguos eventualmente
+        joinBlocks(usedBlocks, i-1);
+
+        memBlock.setAddress(memBlock.getBase() + p.size(), memBlock.getLimit());
+        if (freeBlocks.get(idx).full())
+            freeBlocks.remove(idx);
+
+        p.setAddress(memBlock.getBase(), memBlock.getBase() + p.size() - 1);
         // write to memory file
     }
 }

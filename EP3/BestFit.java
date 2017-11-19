@@ -1,8 +1,3 @@
-import java.util.BitSet;
-// import java.io.IOException;
-// import java.io.RandomAccessFile;
-
-import java.util.BitSet;
 import java.io.IOException;
 //import java.io.RandomAccessFile;
 
@@ -27,7 +22,7 @@ public class BestFit extends FreeSpaceManager {
 
         for (i = 0; i < freeBlocks.size(); i++) {
             int blockSize = freeBlocks.get(i).size();
-            if (blockSize >= p.size() && blockSize < min) {
+            if (blockSize >= p.size() && blockSize <= min) {
                 min = blockSize;
                 idx = i;
             }
