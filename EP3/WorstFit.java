@@ -31,6 +31,6 @@ public class WorstFit extends FreeSpaceManager {
             freeBlocks.remove(idx);
 
         p.setAddress(memBlock.getBase(), memBlock.getLimit());
-        // write to memory file
+        this.updateMemorySlots (p.getPID(), memBlock.getBase(), p.size());
     }
 }
