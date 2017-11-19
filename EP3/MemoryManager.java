@@ -8,8 +8,8 @@ import java.util.Collections;
 
 public class MemoryManager {
     static int total, virt, s, p;
-    static List<Process> processes = new ArrayList<>();
-    static List<Event> events = new ArrayList<>();
+    static List<Process> processes = new ArrayList<Process>();
+    static List<Event> events = new ArrayList<Event>();
     static FreeSpaceManager FSM;
 
     public static void loadFile (String filepath) {
@@ -30,13 +30,18 @@ public class MemoryManager {
                 line = sc.nextLine().split(" ");
 
                 t0 = Integer.parseInt(line[0]);
+                if (line[1] == "COMPACTAR") {
+                    Event ev = new Event(t0);
+                    events.add(ev);
+                    continue;
+                }
                 tf = Integer.parseInt(line[1]);
                 b = Integer.parseInt(line[2]);
                 name = line[3];
 
                 Process p = new Process(name, t0, tf, b);
-                Event arrival = new Event(p, -1, t0);
-                Event finish = new Event(p, -1, tf);
+                Event arrival = new Event(p, t0, true);
+                Event finish = new Event(p, tf, false);
                 // System.out.printf("%d %d %s %d ", t0, tf, name, b);
 
                 for (int i = 4; i < line.length; i += 2) {
@@ -44,7 +49,7 @@ public class MemoryManager {
                     pi = Integer.parseInt(line[i]);
                     ti = Integer.parseInt(line[i+1]);
                     p.insertEvent(pi, ti);
-                    Event ev = new Event(p, pi, ti);
+                    Event ev = new Event(p, ti, pi);
                     events.add(ev);
                     //System.out.printf("%d %d ", pi, ti);
                 }

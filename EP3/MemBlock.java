@@ -1,5 +1,6 @@
 public class MemBlock {
     private boolean isProcess;
+    private int PID;
     private int base;
     private int limit;
     private int size;
@@ -20,6 +21,10 @@ public class MemBlock {
 
     public int size() {
         return this.size;
+    }
+
+    public int getPID() {
+        return this.PID;
     }
 
     public void setAddress (int base, int limit) {

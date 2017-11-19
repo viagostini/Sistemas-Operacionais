@@ -1,7 +1,3 @@
-* Modificar a lista encadeada
-* Arrumar o WorstFit
-* Implementar o QuickFit
-* Compactar a memória
 * Implementar o Optimal
 * Implementar o First-in, First-out
 * Implementar o Least Recently Used (Segunda versão)
@@ -10,3 +6,5 @@
 // 3 algoritmos.
 * Ver a quantidade de page faults, comparando os quatro algoritmos de
 // substituição de páginas.
+* Arrumar o loadFile para conseguir ler o COMPACTAR
+* Criar o compact para a memória virtual

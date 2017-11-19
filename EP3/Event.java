@@ -4,14 +4,17 @@ public class Event implements Comparable<Event> {
     private final int t;
     private final int pos;
     private final Process p;
-    private final boolean needCompact;
-
+    // se o typeEvent = 0 : o processo chegou na memoria virtual
+    // se o typeEvent = 1 : o processo chegou na memoria fisica
+    // se o typeEvent = 2 : compactar
+    // se o typeEvent = 3 : o processo saiu da memoria virtual
+    private final int typeEvent;
 
     public Event (Process p, int t, int pos) {
         this.t = t;
         this.p = p;
         this.pos = pos;
-        this.needCompact = false;
+        this.typeEvent = 1;
     }
 
     // Evento caso seja o comando 't COMPACTAR'
@@ -19,11 +22,27 @@ public class Event implements Comparable<Event> {
         this.t = t;
         this.p = null;
         this.pos = -1;
-        this.needCompact = true;
+        this.typeEvent = 2;
+    }
+
+    // se in == true => o processo esta chegando na memoria virtual
+    // se in == false => o processo esta saindo da memoria virtual
+    public Event (Process p, int t, boolean in) {
+        this.t = t;
+        this.p = p;
+        this.pos = -1;
+        if (in)
+            this.typeEvent = 0;
+        else
+            this.typeEvent = 3;
     }
 
     public int getT() {
         return this.t;
+    }
+
+    public int getPos() {
+        return this.pos;
     }
 
     public Process getP() {

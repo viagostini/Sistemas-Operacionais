@@ -14,11 +14,11 @@ public abstract class FreeSpaceManager {
 
     public FreeSpaceManager (int allocUnitSize, int memSize) {
         this.allocUnitSize = allocUnitSize;
-        freeBlocks = new LinkedList<>();
-        usedBlocks = new LinkedList<>();
+        freeBlocks = new LinkedList<MemBlock>();
+        usedBlocks = new LinkedList<MemBlock>();
         units = memSize/allocUnitSize;
         freeBlocks.add(new MemBlock(0, units-1));
-        this.createMemomyFiles();
+        this.createMemoryFiles();
     }
 
     // Depende do algoritmo de gerenciamento de memória
@@ -59,7 +59,7 @@ public abstract class FreeSpaceManager {
         i++;
     }
 
-    protected void createMemomyFiles () {
+    protected void createMemoryFiles () {
         try {
             fmem = new RandomAccessFile("/tmp/ep3.mem", "rw");
             vmem = new RandomAccessFile("/tmp/ep3.vir", "rw");
@@ -78,6 +78,16 @@ public abstract class FreeSpaceManager {
             fmem.seek(base * 4);
             for (int i = 0; i < size; i++)
                 fmem.writeInt (pid);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void updateVirtualSlots (int pid, int base, int size) {
+        try {
+            vmem.seek(base * 4);
+            for (int i = 0; i < size; i++)
+                vmem.writeInt (pid);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -105,5 +115,17 @@ public abstract class FreeSpaceManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // Compacta a memória física
+    protected void compactMemory() {
+        int pos = 0;
+        for (MemBlock m : this.usedBlocks) {
+            this.updateMemorySlots(-1, m.getBase(), m.size());
+            m.setAddress(pos, m.size() + pos - 1);
+            this.updateMemorySlots(m.getPID(), m.getBase(), m.size());
+            pos += m.size();
+        }
+
     }
 }
