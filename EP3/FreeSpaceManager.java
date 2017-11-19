@@ -1,11 +1,16 @@
 import java.util.List;
 import java.util.LinkedList;
+import java.io.RandomAccessFile;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.File;
 
 public abstract class FreeSpaceManager {
     protected int allocUnitSize;
     protected int units;
     protected List<MemBlock> freeBlocks;
     protected List<MemBlock> usedBlocks;
+    protected RandomAccessFile fmem, vmem;
 
     public FreeSpaceManager (int allocUnitSize, int memSize) {
         this.allocUnitSize = allocUnitSize;
@@ -13,6 +18,7 @@ public abstract class FreeSpaceManager {
         usedBlocks = new LinkedList<>();
         units = memSize/allocUnitSize;
         freeBlocks.add(new MemBlock(0, units-1));
+        this.createMemomyFiles();
     }
 
     // Depende do algoritmo de gerenciamento de memória
@@ -22,7 +28,7 @@ public abstract class FreeSpaceManager {
         int i;
         // acha bloco previamente ocupado por p e remove de usedBlocks
         for (i = 0; i < usedBlocks.size(); i++)
-            if (usedBlocks.get(i).getBase() == p.getBase())
+            if (usedBlocks.get(i).getBase() == p.base())
                 break;
         MemBlock memBlock = usedBlocks.remove(i);
 
@@ -51,5 +57,53 @@ public abstract class FreeSpaceManager {
             }
         }
         i++;
+    }
+
+    protected void createMemomyFiles () {
+        try {
+            fmem = new RandomAccessFile("/tmp/ep3.mem", "rw");
+            vmem = new RandomAccessFile("/tmp/ep3.vir", "rw");
+
+            for (int i = 0; i < units; i++)
+                fmem.writeInt (-1);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void updateMemorySlots (int pid, int base, int size) {
+        try {
+            fmem.seek(base * 4);
+            for (int i = 0; i < size; i++)
+                fmem.writeInt (pid);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void printMemoryFile () {
+        try {
+            fmem.seek(0);
+            for (int i = 0; i < units; i++)
+                System.out.print(fmem.readInt() + " ");
+            System.out.println();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void deleteMemoryFiles () {
+        try {
+            fmem.close();
+            vmem.close();
+            File fm = new File("/tmp/ep3.mem");
+            File vm = new File("/tmp/ep3.vir");
+            fm.delete();
+            vm.delete();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

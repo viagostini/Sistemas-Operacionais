@@ -24,8 +24,6 @@ public class MemoryManager {
             s = Integer.parseInt(line[2]);
             p = Integer.parseInt(line[3]);
 
-            // CRIAR ARQUIVOS DE MEMÓRIA
-
             // System.out.printf("%d %d %d %d\n", total, virt, s, p);
 
             while (sc.hasNextLine()) {
@@ -83,5 +81,7 @@ public class MemoryManager {
             else if (line[0].equals("sai"))
                 break;
         }
+
+        FSM.deleteMemoryFiles();
     }
 }
