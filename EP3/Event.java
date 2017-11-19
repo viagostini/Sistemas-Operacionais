@@ -17,6 +17,8 @@ public class Event implements Comparable<Event> {
     // Evento caso seja o comando 't COMPACTAR'
     public Event (int t) {
         this.t = t;
+        this.p = null;
+        this.pos = -1;
         this.needCompact = true;
     }
 

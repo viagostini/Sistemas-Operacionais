@@ -1,7 +1,4 @@
-import java.util.BitSet;
-
 public class WorstFit extends FreeSpaceManager {
-    private BitSet bitmap;
 
     public WorstFit (int allocUnitSize, int memSize) {
         super(allocUnitSize, memSize);
@@ -33,7 +30,7 @@ public class WorstFit extends FreeSpaceManager {
         if (freeBlocks.get(idx).full())
             freeBlocks.remove(idx);
 
-        p.setAddress(memBlock.getBase(), memBlock.getBase() + p.size() - 1);
+        p.setAddress(memBlock.getBase(), memBlock.getLimit());
         // write to memory file
     }
 }
