@@ -17,13 +17,8 @@ public class FIFO extends PagingManager {
     public void addPageFrame (Page p) {
         if (last == n_pages - 1)
             removePageFrame();
-
-        pages[idx] = p;
-        p.setPosPhysical(idx);
-        } else {
-            removePage();
-            pages
-        }
+        pages[idx] = ++last;
+        p.setPosPhysical(last);
     }
 
     public Page removePageFrame() {
