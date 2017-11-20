@@ -53,8 +53,8 @@ public class Event implements Comparable<Event> {
         return this.pos;
     }
 
-    public boolean getCompact() {
-        return this.needCompact;
+    public int getTypeEvent() {
+        return this.typeEvent;
     }
 
     public int compareTo (Event that) {

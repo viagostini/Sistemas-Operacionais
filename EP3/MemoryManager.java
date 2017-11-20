@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Math;
 
 public class MemoryManager {
     static int total, virt, s, p;
     static List<Process> processes = new ArrayList<Process>();
     static List<Event> events = new ArrayList<Event>();
     static FreeSpaceManager FSM;
+    static PagingManager PM;
 
     public static void loadFile (String filepath) {
         int t0, tf, b;
@@ -42,6 +44,8 @@ public class MemoryManager {
                 Process p = new Process(name, t0, tf, b);
                 Event arrival = new Event(p, t0, true);
                 Event finish = new Event(p, tf, false);
+                events.add(arrival);
+                events.add(finish);
                 // System.out.printf("%d %d %s %d ", t0, tf, name, b);
 
                 for (int i = 4; i < line.length; i += 2) {
@@ -74,17 +78,81 @@ public class MemoryManager {
             if (line[0].equals("carrega"))
                 loadFile(line[1]);
             else if (line[0].equals("espaco")) {          /* TODO */
-                System.out.println("Gerenciamento de espaço livre: Best Fit.");
-                FSM = new BestFit(s, virt);
+                int alg = Integer.parseInt(line[1]);
+                switch (alg) {
+                    case 1:
+                        System.out.println("Gerenciamento de espaço livre: Best Fit.");
+                        FSM = new BestFit(s, virt);
+                        break;
+                    case 2:
+                        FSM = new WorstFit(s, virt);
+                        break;
+                    case 3:
+                        FSM = new QuickFit(s, virt);
+                }
             }
             else if (line[0].equals("substitui")) {
-                break;  /* TODO */
+                int alg = Integer.parseInt(line[1]);
+                switch (alg) {
+                    case 1:
+                        PM = new Optimal();
+                        break;
+                    case 2:
+                        PM = new FIFO();
+                        break;
+                    case 3:
+                        PM = new LRU2();
+                        break;
+                    case 3:
+                        PM = new LRU4();
+                }
             }
             else if (line[0].equals("executa")) {
-                break;  /* TODO */
+                int dt = Integer.parseInt(line[1]);
+
+                FSM.printMemBlocks();
+                int t = dt;
+                for (Event e : events) {
+                    while (t <= e.getT()) {
+                        FSM.printMemBlocks();
+
+                        if (t % 10 == 0)
+                            PM.resetBitR();
+
+                        t += dt;
+                        PM.t = t;
+                    }
+
+                    int typeEvent = e.getTypeEvent();
+
+                    // Chegada de processo na memória virtual
+                    if (typeEvent == 0) {
+                        int nProcessPages = Math.ceil(e.getP().size() / p);
+
+                        // if (nProcessPages % p != 0)
+                        //    nProcessPages++;
+
+                        for (int i = 0; i < nProcessPages; i++) {
+                            Page p = new Page(-1, -1);
+                            PM.insertPage(p);
+                            e.getP().insertPage(p);
+                        }
+                    } else if (typeEvent == 1) {
+                        int adress = e.getP().getPage(e.getPos() / p).getPosVirtual() * + e.getPos() % p;
+
+                        PM.requestPageFrame(adress);
+                    } else if (typeEvent == 2) {
+                        FSM.compactMemory();
+                        PM.compactMemory();
+                    } else if (typeEvent == 3) {
+                        PM.removeProcess(e.getP());
+                    }
+                }
             }
             else if (line[0].equals("sai"))
                 break;
+            else
+                System.out.println("Comando inválido!");
         }
 
         FSM.deleteMemoryFiles();

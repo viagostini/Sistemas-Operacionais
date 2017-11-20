@@ -13,7 +13,7 @@ public class Process {
     private String name;
     private List<Integer> ps;
     private List<Integer> ts;
-    //private List<Page> pages;
+    private List<Page> pages;
 
 	public Process(String name, int t0, int tf, int size) {
 		this.PID = ++_PID;
@@ -21,9 +21,9 @@ public class Process {
 		this.tf = tf;
         this.size = size;
 		this.name = name;
-		this.ps = new ArrayList<>();
-		this.ts = new ArrayList<>();
-        //this.pages = new ArrayList<>();
+		this.ps = new ArrayList<Integer>();
+		this.ts = new ArrayList<Integer>();
+        this.pages = new ArrayList<Page>();
 	}
 
     /**
@@ -56,6 +56,13 @@ public class Process {
 		return size;
 	}
 
+    public void insertPage(Page p) {
+        this.pages.add(p);
+    }
+
+    public Page getPage(int idx) {
+        return this.pages.get(idx);
+    }
 	/**
 	* Devolve o tempo de chegada do processo
 	*/

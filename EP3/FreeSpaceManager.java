@@ -104,7 +104,7 @@ public abstract class FreeSpaceManager {
         }
     }
 
-    protected void deleteMemoryFiles () {
+    protected void deleteMemoryFiles() {
         try {
             fmem.close();
             vmem.close();

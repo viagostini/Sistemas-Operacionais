@@ -6,5 +6,5 @@
 // 3 algoritmos.
 * Ver a quantidade de page faults, comparando os quatro algoritmos de
 // substituição de páginas.
-* Arrumar o loadFile para conseguir ler o COMPACTAR
 * Criar o compact para a memória virtual
+* Criar função para imprimir a lista ligada de bitmap
