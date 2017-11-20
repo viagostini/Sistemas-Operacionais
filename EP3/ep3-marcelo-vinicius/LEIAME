@@ -1,0 +1,19 @@
+/*
+ *  Exercício Programa 3 - Sistemas Operacionais
+ *
+ *  Marcelo Baiano Pastorino Trylesinski |  9297996
+ *  Vinicius Perche de Toledo Agostini   |  4367487
+ *
+ */
+
+ Para compilar, basta rodar
+
+    $ make
+
+Para executar, rode
+
+    $ java MemoryManager
+
+Para apagar os .class, rode
+
+    $ make clean
