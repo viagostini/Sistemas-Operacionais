@@ -7,7 +7,9 @@ public abstract class PagingManager {
 
     public PagingManager (int virtual, int p, int physical) {
         this.v = virtual;
-        this.n_pages
+        this.n_pages = physical / p;
+        this.size = p;
+        this.pageAddress = new Page[virtual/p];
     }
 
     public abstract void addPage (Page p);
@@ -36,7 +38,16 @@ public abstract class PagingManager {
             p.setR(false);
     }
 
-    public void removeProcess (Process p);
+    public void compactMemory ();
+
+    public void removeProcess (Process p) {
+        for(Page pg : p.getPages()) {
+            removePage(pg.getPosVirtual());
+            pageAddress[pg.getPosVirtual()] = null;
+            pg.setPhysical(-1);
+            pg.setVirtual(-1);
+        }
+    }
 
     public int requestPageFrame (int address);
 

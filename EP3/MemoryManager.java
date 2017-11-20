@@ -138,9 +138,10 @@ public class MemoryManager {
                             e.getP().insertPage(p);
                         }
                     } else if (typeEvent == 1) {
-                        int adress = e.getP().getPage(e.getPos() / p).getPosVirtual() * + e.getPos() % p;
+                        int address = e.getP().getPage(e.getPos() / p).getPosVirtual() * + e.getPos() % p;
 
-                        PM.requestPageFrame(adress);
+                        address = PM.requestPageFrame(address);
+                        FSM.addProcess(address);
                     } else if (typeEvent == 2) {
                         FSM.compactMemory();
                         PM.compactMemory();

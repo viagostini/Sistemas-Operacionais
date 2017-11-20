@@ -63,6 +63,10 @@ public class Process {
     public Page getPage(int idx) {
         return this.pages.get(idx);
     }
+
+    public List<Page> getPages() {
+        return this.pages;
+    }
 	/**
 	* Devolve o tempo de chegada do processo
 	*/
