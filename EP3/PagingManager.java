@@ -12,8 +12,10 @@ public abstract class PagingManager {
         this.pageAddress = new Page[virtual/p];
     }
 
-    public abstract void addPage (Page p);
+    public abstract void addPageFrame (Page p);
     public abstract Page removePage ();
+    public abstract void removePage (int idx);
+    public abstract int findFreePage();
     //public abstract void add_pg_to_free_space(int address, Page p);
     //public abstract void terminate_page(int pg_index);
 
@@ -52,13 +54,24 @@ public abstract class PagingManager {
         for(Page pg : p.getPages()) {
             removePage(pg.getPosVirtual());
             pageAddress[pg.getPosVirtual()] = null;
-            pg.setPhysical(-1);
-            pg.setVirtual(-1);
+            pg.setPosPhysical(-1);
+            pg.setPosVirtual(-1);
         }
     }
 
-    public int requestPageFrame (int address) {
 
+    public int requestPageFrame (int address) {
+        int aux = virtualToPhysical(address);
+
+        if (aux != -1) {
+            pageAddress[address / size].setR(true);
+            return aux;
+        } else {
+            if(findFreePage() == -1)
+                addPageFrame(pageAddress[address / size]);
+            pageAddress[address / size].setR(true);
+            return virtualToPhysical(address);
+       }
     }
 
 }

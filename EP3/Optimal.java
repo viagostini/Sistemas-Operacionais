@@ -17,9 +17,9 @@ public class Optimal extends PagingManager {
         int counter = 0;
         int i = 0;
         for (Event e : events) {
-            if (e.getT() >= time) {
-                int aux = e.getP().pages.get(e.getAccess()%size).getPhysical();
-                if (e.getAccess() >= 0 && check[aux] == false && aux != -1) {
+            if (e.getT() >= t) {
+                int aux = e.getP().getPage(e.getPos()%size).getPosPhysical();
+                if (e.getTypeEvent() == 1 && check[aux] == false && aux != -1) {
                     check[aux] = true;
                     counter++;
                 }
@@ -58,7 +58,7 @@ public class Optimal extends PagingManager {
         int idx = getOptimalRemoval();
         Page x = freePages[idx];
         freePages[idx].setPosPhysical(-1);
-        free[idx] = null;
+        freePages[idx] = null;
         return x;
     }
 

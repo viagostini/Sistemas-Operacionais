@@ -37,7 +37,7 @@ public class BestFit extends FreeSpaceManager {
         // junta blocos quebrados que se tornaram contíguos eventualmente
         joinBlocks(usedBlocks, i-1);
 
-        freeBlocks.setAddress(memBlock.getBase() + p.size(), memBlock.getLimit());
+        freeBlocks.get(idx).setAddress(memBlock.getBase() + p.size(), memBlock.getLimit());
         if (freeBlocks.get(idx).full())
             freeBlocks.remove(idx);
 

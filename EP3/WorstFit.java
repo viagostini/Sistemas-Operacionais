@@ -12,7 +12,7 @@ public class WorstFit extends FreeSpaceManager {
         for (i = 0; i < freeBlocks.size(); i++) {
             int blockSize = freeBlocks.get(i).size();
             if (blockSize >= p.size() && blockSize >= max) {
-                min = blockSize;
+                max = blockSize;
                 idx = i;
             }
         }
@@ -26,7 +26,7 @@ public class WorstFit extends FreeSpaceManager {
         // junta blocos quebrados que se tornaram contíguos eventualmente
         joinBlocks(usedBlocks, i-1);
 
-        freeBlocks.get(i).setAddress(memBlock.getBase() + p.size(), memBlock.getLimit());
+        freeBlocks.get(idx).setAddress(memBlock.getBase() + p.size(), memBlock.getLimit());
         if (freeBlocks.get(idx).full())
             freeBlocks.remove(idx);
 

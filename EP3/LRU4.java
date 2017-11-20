@@ -34,7 +34,7 @@ public class LRU4 extends PagingManager {
         }
     }
 
-    public void addPage (Page p) {
+    public void addPageFrame (Page p) {
         int idx = findFreePage();
 
         if (idx != -1) {
@@ -43,7 +43,7 @@ public class LRU4 extends PagingManager {
             counter[aux] = 0;
         } else {
             removePage();
-            addPage(p);
+            addPageFrame(p);
         }
     }
 
