@@ -97,14 +97,14 @@ public class MemoryManager {
                     case 1:
                         PM = new Optimal(virt, p, total, events);
                         break;
-                    /* case 2:
-                        PM = new FIFO();
+                    case 2:
+                        PM = new FIFO(virt, p, total);
                         break;
                     case 3:
-                        PM = new LRU2();
+                        //PM = new LRU2();
                         break;
-                    case 3:
-                        PM = new LRU4(); */
+                    case 4:
+                        PM = new LRU4(virt, p, total);
                 }
             }
             else if (line[0].equals("executa")) {

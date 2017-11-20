@@ -2,7 +2,7 @@ public class LRU4 extends PagingManager {
     Page[] freePages;
     int[] counter;
 
-    public LRU (int virtual, int p, int physical) {
+    public LRU4 (int virtual, int p, int physical) {
         super(virtual, p, physical);
         freePages = new Page[n_pages];
         counter = new int[n_pages];

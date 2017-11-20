@@ -18,12 +18,12 @@ public class QuickFit extends FreeSpaceManager {
 
         List<AuxiliarClass> list = new ArrayList<AuxiliarClass>();
         // conta frequencia dos p.size()
-        int[] freq = new int[10000000];
+        int[] freq = new int[memSize];
         for (Process p : processes)
             freq[p.size()]++;
 
         // cria os objetos auxiliares pra ordenar
-        for (int i = 0; i < units; i++)
+        for (int i = 0; i < memSize; i++)
             if (freq[i] != 0)
                 list.add(new AuxiliarClass(i, freq[i]));
 
