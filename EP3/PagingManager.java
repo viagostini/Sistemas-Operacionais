@@ -7,7 +7,9 @@ public abstract class PagingManager {
 
     public PagingManager (int virtual, int p, int physical) {
         this.v = virtual;
-        this.n_pages
+        this.n_pages = physical / p;
+        this.size = p;
+        this.pageAddress = new Page[virtual/p];
     }
 
     public abstract void addPage (Page p);
