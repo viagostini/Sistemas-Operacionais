@@ -49,10 +49,6 @@ public class Event implements Comparable<Event> {
         return this.p;
     }
 
-    public int getPos() {
-        return this.pos;
-    }
-
     public int getTypeEvent() {
         return this.typeEvent;
     }

@@ -19,10 +19,10 @@ public abstract class PagingManager {
 
     public int virtualToPhysical(int v_address) {
         int aux = v_address / size;
-        if (page_Address[aux].getPhysical() == -1)
+        if (pageAddress[aux].getPosPhysical() == -1)
             return -1;
         else
-            return (page_Address[aux].getPhysical() * size + v_address % size);
+            return (pageAddress[aux].getPosPhysical() * size + v_address % size);
     }
 
     public void insertPage (Page p) {
@@ -38,7 +38,15 @@ public abstract class PagingManager {
             p.setR(false);
     }
 
-    public void compactMemory ();
+    public void compactMemory () {
+        for (int i = 0; i < (v / size); i++) {
+            if (pageAddress[i] == null) {
+                for (int j = i + 1; j < (v / size); j++) {
+
+                }
+            }
+        }
+    }
 
     public void removeProcess (Process p) {
         for(Page pg : p.getPages()) {
@@ -49,8 +57,8 @@ public abstract class PagingManager {
         }
     }
 
-    public int requestPageFrame (int address);
+    public int requestPageFrame (int address) {
 
-    public void compactMemory();
+    }
 
 }

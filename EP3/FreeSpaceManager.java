@@ -126,6 +126,17 @@ public abstract class FreeSpaceManager {
             this.updateMemorySlots(m.getPID(), m.getBase(), m.size());
             pos += m.size();
         }
+    }
 
+    protected void printMemBlocks() {
+        System.out.println("Espaços livres: ");
+        System.out.println("(PID, Base, Limit)");
+        for (MemBlock m : freeBlocks)
+            System.out.printf("(%3d, %4d, %5d)\n", m.getPID(), m.getBase(), m.getLimit());
+
+        System.out.println("Espaços usados: ");
+        System.out.println("(PID, Base, Limit)");
+        for (MemBlock m : usedBlocks)
+            System.out.printf("(%3d, %4d, %5d)\n", m.getPID(), m.getBase(), m.getLimit());
     }
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Math;
+import java.lang.Math;
 
 public class MemoryManager {
     static int total, virt, s, p;
@@ -88,23 +88,23 @@ public class MemoryManager {
                         FSM = new WorstFit(s, virt);
                         break;
                     case 3:
-                        FSM = new QuickFit(s, virt);
+                        FSM = new QuickFit(s, virt, processes);
                 }
             }
             else if (line[0].equals("substitui")) {
                 int alg = Integer.parseInt(line[1]);
                 switch (alg) {
                     case 1:
-                        PM = new Optimal();
+                        PM = new Optimal(virt, p, total, events);
                         break;
-                    case 2:
+                    /* case 2:
                         PM = new FIFO();
                         break;
                     case 3:
                         PM = new LRU2();
                         break;
                     case 3:
-                        PM = new LRU4();
+                        PM = new LRU4(); */
                 }
             }
             else if (line[0].equals("executa")) {
@@ -127,7 +127,7 @@ public class MemoryManager {
 
                     // Chegada de processo na memória virtual
                     if (typeEvent == 0) {
-                        int nProcessPages = Math.ceil(e.getP().size() / p);
+                        int nProcessPages = (int)Math.ceil(e.getP().size() / p);
 
                         // if (nProcessPages % p != 0)
                         //    nProcessPages++;
@@ -141,7 +141,7 @@ public class MemoryManager {
                         int address = e.getP().getPage(e.getPos() / p).getPosVirtual() * + e.getPos() % p;
 
                         address = PM.requestPageFrame(address);
-                        FSM.addProcess(address);
+                        // FSM.addProcess(address); PRECISAMOS ARRUMAR ESTA MERDA AQUI
                     } else if (typeEvent == 2) {
                         FSM.compactMemory();
                         PM.compactMemory();

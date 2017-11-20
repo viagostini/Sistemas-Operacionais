@@ -4,7 +4,7 @@ public class Optimal extends PagingManager {
     Page[] freePages;
     List<Event> events;
 
-    public Optimal (int virtual, int p, int physical, List<Events> events) {
+    public Optimal (int virtual, int p, int physical, List<Event> events) {
         super(virtual, p, physical);
         this.freePages = new Page[n_pages];
         this.events = events;

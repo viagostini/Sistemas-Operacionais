@@ -1,10 +1,13 @@
+import java.util.Map;
+import java.util.List;
+
 public class QuickFit extends FreeSpaceManager {
     /**
     * O algoritmo Quick Fit mantém listas com blocos de memórias dos tamanhos
     * mais utilizados pelo caso de teste para agilizar esses acessos
     */
     private Map<Integer, List<MemBlock>> mostUsed;
-    private final n = 3;
+    private final int n = 3;
 
     public QuickFit (int allocUnitSize, int memSize, List<Process> processes) {
         super(allocUnitSize, memSize);
